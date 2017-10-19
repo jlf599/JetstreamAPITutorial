@@ -1,1 +1,551 @@
-# GatewaysTutorial
+# Gateways OpenStack API Tutorial
+
+# Introduction to OpenStack CLI
+The OpenStack command line interface (CLI) is only one way to interact with OpenStack’s RESTful API. In this exercise we will use the command line clients installed on Jetstream instances to OpenStack entities; e.g. images, instances, volumes, objects, networks, etc.
+
+We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from https://pypi.python.org/pypi/python-openstackclient
+
+## Some background getting started Jetstream Documentation
+
+Getting started with the Jetstream’s OpenStack API
+http://wiki.jetstream-cloud.org/Using+the+Jetstream+API
+
+Notes about accessing Jetstream’s OpenStack API
+http://wiki.jetstream-cloud.org/After+API+access+has+been+granted
+
+SDKs for programmatically accessing OpenStack’s APIs
+https://developer.openstack.org/firstapp-libcloud/getting_started.html
+
+openrc.sh for Jetstream’s OpenStack API
+http://wiki.jetstream-cloud.org/Setting+up+openrc.sh
+
+## Getting started with the hands on portion of the tutorial
+### Insuring that your credentials are in order
+Jetstream is an XSEDE resource and you must have an XSEDE account before you can use it either via the Atmosphere user interface or the OpenStack API. The following steps must work before proceeding; specifically, accessing the Horizon dashboard. If you cannot login to the Horizon dashboard, nothing else will work. When you first get API access on Jetstream, that's typically how we recommend people test their credentials.
+
+# Access Openstack Client Server
+
+To access the client server, use your provided username and password, and log in to
+
+```
+ssh your_training_user@tutorial.jetstream-cloud.org
+```
+
+You may experience a delay after typing in your password - this is normal! Don't cancel your connection.
+
+# Configure openstack client
+
+First, double-check the openrc.sh with your training account info - the file already exists in your home directory. Normally you'd have to create your own -- refer to http://wiki.jetstream-cloud.org/Setting+up+openrc.sh 
+
+```
+[Tutorial] train60 ~--> cat ./openrc.sh
+export OS_PROJECT_DOMAIN_NAME=tacc 
+export OS_USER_DOMAIN_NAME=tacc 
+export OS_PROJECT_NAME=TG-CDA170005 
+export OS_USERNAME=SET_ME
+export OS_PASSWORD='REDACTED' 
+export OS_AUTH_URL=ADD_END_POINT
+export OS_IDENTITY_API_VERSION=3
+```
+
+In the real world you will want not want to save your password in a file. A much more secure way to set OS_PASSWORD is to read it from the command line when the openrc is sourced. E.g.
+
+```
+echo "Please enter your OpenStack Password: "
+read -sr OS_PASSWORD_INPUT
+export OS_PASSWORD=$OS_PASSWORD_INPUT
+```
+
+Next, add these environment variables to your shell session:
+```
+source openrc.sh
+```
+
+Ensure that you have working openstack client access by running:
+```
+openstack image list | grep JS-API-Featured
+```
+
+# A few notes about openstack commands
+## Command structure
+* openstack NOUN VERB PARAMETERS
+* openstack help [NOUN [VERB [PARAMETER]]]
+* openstack NOUN VERB -h will also produce the help documentation
+* Common NOUNs include image, server, volume, network, subnet, router, port, etc.
+* Common verbs are list, show, set, create, delete, etc.
+* Two commonly used verbs are list and show
+* list will show everything that your project is allowed to view
+* show takes a name or UUID and shows the details of the specified entity
+
+E.g.
+
+```
+openstack image list
+openstack image show JS-API-Featured-Centos7-Sep-27-2017
+openstack image show 76f30c17-a7e1-4253-97c8-ae0363e45612
+```
+
+## Names verses UUIDs
+* Names and Universally Unique Identifier (UUID) are interchangeable on the command line
+* IMPORTANT POINT TO NOTE: OpenStack will let you name two or more entities with the same names. If you run into problems controlling something via its name, then fall back to the UUID of the entity.
+* Once you have two entities with the same name, your only recourse is to use the UUID
+
+# Creating the cyberinfrastructure and booting your first instance
+We will be following the short tutorial on the Jetstream documentation wiki 
+http://wiki.jetstream-cloud.org/OpenStack+command+line
+
+It is informative to follow what’s happening in the Horizon dashboard as you execute commands. Keep in mind that in OpenStack everything is project based. Everyone in this tutorial is in the same OpenStack project. In the Horizon dashboard you will see the results of all the other students commands as they execute them. You can also affect other objects in your project, so **tread carefully and don't delete someone else's work!** 
+
+# What we’re going to do
+* Create security group and add rules
+* Create and upload ssh keys
+* Create and configure the network (this is only done once)
+* Start an instance
+* Log in and take a look around
+* Shutdown the instance
+* Dismantle what we have built
+
+# Create security group and adding rules to the group
+
+By DEFAULT, the security groups on Jetstream (OpenStack in general) are CLOSED - this is the opposite of how firewalls typically work (completely OPEN by default). If you create a host on a new allocation without adding it to a security group that allows access to some ports, you will not be able to use it!
+
+## Create the group that we will be adding rules to
+
+```
+openstack security group create --description "ssh & icmp enabled" ${OS_USERNAME}-global-ssh
+```
+
+## Create a rule for allowing ssh inbound from an IP address
+
+```
+openstack security group rule create --proto tcp --dst-port 22:22 --src-ip 0.0.0.0/0 ${OS_USERNAME}-global-ssh
+```
+
+## Create a rule that allows ping and other ICMP packets
+
+```
+openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
+```
+*There's a reason to allow icmp. It's a contentious topic, but we recommend leaving it open. http://shouldiblockicmp.com/
+
+### Optional rule to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for comminications amonst all those instances.
+
+```
+openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+```
+
+### A better (more restrictive) example might be:
+
+```
+openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+```
+### Look at your security group (optional)
+
+```
+openstack security group show global-ssh 
+```
+
+## Adding/removing security groups after an instance is running
+
+```
+openstack server add    security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
+openstack server remove security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
+```
+
+*Note: that when you change the rules within a security group you are changing them in real-time on running instances. When we boot the instance below, we will specify which security groups we want to associate to the running instance.*
+
+# Access to your instances will be via ssh keys
+If you do not already have an ssh key we will need to create on. For this tutorial we will create a passwordless key. In the real world, you would not want to do this
+
+```
+ssh-keygen -b 2048 -t rsa -f ${OS_USERNAME}-api-key -P ""
+```
+
+## Upload your key to OpenStack
+
+```
+openstack keypair create --public-key ${OS_USERNAME}-api-key.pub ${OS_USERNAME}-api-key
+```
+
+## Look at your keys (option)
+
+```
+openstack keypair list
+```
+
+### If you want to be 100% sure, you can show the fingerprint of your key with
+
+```
+ssh-keygen -lf ${OS_USERNAME}-api-key
+```
+
+# Create and configure the network (this is usually only done once)
+
+## Create the network
+
+```
+openstack network create ${OS_USERNAME}-api-net
+```
+
+## List the networks; do you see yours?
+
+```
+openstack network list
+```
+
+## Create a subnet within your network. Note the X & Y in the address range. Each student in this class (technically, this OpenStack project) will need to use a unique subnet range
+
+### If you want to list the subnets that have been created, just in case
+```
+openstack subnet list
+```
+
+Then create your subnet
+
+```
+openstack subnet create --network ${OS_USERNAME}-api-net --subnet-range 10.X.Y.0/24 ${OS_USERNAME}-api-subnet1
+```
+
+## Create a router
+
+```
+openstack router create ${OS_USERNAME}-api-router
+```
+
+## Attach your subnet to the router
+
+```
+openstack router add subnet ${OS_USERNAME}-api-router ${OS_USERNAME}-api-subnet1
+```
+
+## Attach your router to the public (externally routed) network
+
+```
+openstack router set --external-gateway public ${OS_USERNAME}-api-router
+```
+
+*Note: You cannot attach an instance directly to the public router. This was a conscious design decision. 
+
+## Note the details of your router
+
+```
+openstack router show ${OS_USERNAME}-api-router
+```
+
+# Start an instance
+
+## Note the flavors (sizes) of instances that create
+
+```
+openstack flavor list
+```
+
+## Note the possible images that you can use on the API side of Jetstream.
+
+```
+openstack image list --limit 500 | grep JS-API-Featured
+```
+
+Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image
+
+## Time to boot your instance
+```
+openstack server create ${OS_USERNAME}-api-U-1 \
+--flavor m1.tiny \
+--image JS-API-Featured-Centos7-Sep-27-2017 \
+--key-name ${OS_USERNAME}-api-key \
+--security-group ${OS_USERNAME}-global-ssh \
+--nic net-id=${OS_USERNAME}-api-net
+```
+
+Note that ${OS_USERNAME}-api-U-1 is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
+
+*Note on patching 
+
+## Create an IP address…
+
+```
+openstack floating ip create public
+```
+
+## …then add that IP address to your running instance.
+
+```
+openstack server add floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
+```
+
+Is the instance reachable?
+
+```
+ping <your.ip.number.here>
+ssh centos@<your.ip.number.here> *or*
+ssh ubuntu@<your.ip.number.here>
+
+```
+
+## Looking at Horizon
+
+```iu.jetstream-cloud.org/dashboard```
+
+with your tg???? id, to monitor your build progress on the Horizon interface.
+You will also be able to view other trainees instances and networks - **PLEASE do not delete 
+or modify anything that isn't yours!**
+
+## A brief look at volumes
+
+Creating a volume:
+
+```
+openstack volume create --size 10 ${OS_USERNAME}-10GVolume
+```
+
+Now, add the new storage device to your VM:
+
+```
+openstack server add volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+```
+
+Let's ssh in and get the volume working:
+
+```
+ssh centos@<your.ip.number.here> *or*
+ssh ubuntu@<your.ip.number.here>
+```
+
+Become root on your VM: (otherwise, you'll have to preface much of the following with sudo)
+```
+sudo su -
+```
+
+Find the new volume on the headnode with (most likely it will mount as sdb):
+```
+[Tutorial] root ~--> dmesg | grep sd
+[    1.715421] sd 2:0:0:0: [sda] 16777216 512-byte logical blocks: (8.58 GB/8.00 GiB)
+[    1.718439] sd 2:0:0:0: [sda] Write Protect is off
+[    1.720066] sd 2:0:0:0: [sda] Mode Sense: 63 00 00 08
+[    1.720455] sd 2:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[    1.725878]  sda: sda1
+[    1.727563] sd 2:0:0:0: [sda] Attached SCSI disk
+[    2.238056] XFS (sda1): Mounting V5 Filesystem
+[    2.410020] XFS (sda1): Ending clean mount
+[    7.997131] Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+[    8.539042] sd 2:0:0:0: Attached scsi generic sg0 type 0
+[    8.687877] fbcon: cirrusdrmfb (fb0) is primary device
+[    8.719492] cirrus 0000:00:02.0: fb0: cirrusdrmfb frame buffer device
+[  246.622485] sd 2:0:0:1: Attached scsi generic sg1 type 0
+[  246.633569] sd 2:0:0:1: [sdb] 20971520 512-byte logical blocks: (10.7 GB/10.0 GiB)
+[  246.667567] sd 2:0:0:1: [sdb] Write Protect is off
+[  246.667923] sd 2:0:0:1: [sdb] Mode Sense: 63 00 00 08
+[  246.678696] sd 2:0:0:1: [sdb] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[  246.793574] sd 2:0:0:1: [sdb] Attached SCSI disk
+```
+
+Create a new filesystem on the device (from the VM):
+
+```
+mkfs.xfs /dev/sdb
+```
+
+Create a directory for the mount point and mount it (on the VM):
+
+```
+mkdir /testmount
+mount /dev/sdb /testmount
+df -h
+```
+
+Let's clean up the volume (from the instance):
+```
+cd /
+umount /testmount
+```
+
+Disconnect from the VM and do this from the shell host:
+```
+openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+```
+
+
+
+## Putting our instance into a non-running state
+
+Reboot the instance (shutdown -r now).
+
+```
+openstack server reboot ${OS_USERNAME}-api-U-1
+
+or
+
+openstack server reboot ${OS_USERNAME}-api-U-1 --hard
+```
+
+Stop the instance (shutdown -h now). Note that state is not retained and that resources are still reserved on the compute host so that when you decide restart the instance, resources are available to activate the instance.
+
+```
+openstack server stop ${OS_USERNAME}-api-U-1
+openstack server start ${OS_USERNAME}-api-U-1
+```
+
+Pause the instance Note that your instance still remains in memory, state is retained, and resources continue to be reserved on the compute host assuming that you will be restarting the instance.
+
+```
+openstack server pause   ${OS_USERNAME}-api-U-1
+openstack server unpause ${OS_USERNAME}-api-U-1
+```
+
+Put the instance to sleep; similar to closing the lid on your laptop. 
+Note that resources are still reserved on the compute host for when you decide restart the instance
+
+```
+openstack server suspend ${OS_USERNAME}-api-U-1
+openstack server resume  ${OS_USERNAME}-api-U-1
+```
+
+Shut the instance down and move to storage. Memory state is not maintained. Ephemeral storage is maintained. 
+Note that resources are still reserved on the compute host for when you decide restart the instance
+
+```
+openstack server shelve ${OS_USERNAME}-api-U-1
+openstack server unshelve ${OS_USERNAME}-api-U-1
+```
+
+# Dismantling what we have built
+Note that infrastructure such as networks, routers, subnets, etc. only need to be created once and are usable by all members of the project. These steps are included for completeness. And, to clean up for the next class.
+
+Remove the IP from the instance
+
+```
+openstack server remove floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
+```
+
+Return the IP to the pool
+
+```
+openstack floating ip delete <your.ip.number.here>
+```
+
+Delete the instance
+
+```
+openstack server delete ${OS_USERNAME}-api-U-1
+```
+
+Unplug your router from the public network
+
+```
+openstack router unset --external-gateway ${OS_USERNAME}-api-router
+```
+
+Remove the subnet from the network
+
+```
+openstack router remove subnet ${OS_USERNAME}-api-router ${OS_USERNAME}-api-subnet1
+```
+
+Delete the router
+
+```
+openstack router delete ${OS_USERNAME}-api-router
+```
+
+Delete the subnet
+
+```
+openstack subnet delete ${OS_USERNAME}-api-subnet1
+```
+
+Delete the network
+
+```
+openstack network delete ${OS_USERNAME}-api-net
+```
+
+For further investigation…
+A tutorial was presented at the PEARC17 conference on how to build a SLURM HPC cluster with OpenStack 
+The tutorial assumes that a node at IP 149.165.157.95 is running that you need to login to as a first step. (Similar to this exercise.) This node was provided as an easy way to run the class and its only purpose was to provide a host with the openstack CLI clients installed. You can safely skip this step and proceed with executing the openstack commands you see in the tutorial.
+
+
+
+
+
+
+
+----------
+
+
+
+
+
+Become root: (otherwise, you'll have to preface much of the following with sudo)
+```
+headnode] --> sudo su -
+```
+
+Create an ssh key on the headnode, as root:
+```
+headnode] --> ssh-keygen -b 2048 -t rsa
+#just accepting the defaults (hit Enter) is fine for this tutorial!
+```
+We'll use this to enable root access between nodes in the cluster, later.
+
+Note what the private IP is - it will be referred to later as 
+HEADNODE-PRIVATE-IP (in this example, it shows up at 10.0.0.1):
+``` 
+headnode] --> ip addr
+...
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:ef:7b:21 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.0.1/24 brd 172.26.37.255 scope global dynamic eth0
+       valid_lft 202sec preferred_lft 202sec
+    inet6 fe80::f816:3eff:feef:7b21/64 scope link 
+       valid_lft forever preferred_lft forever
+...
+```
+
+Install useful software:
+```
+headnode] --> yum install vim rsync epel-release openmpi openmpi-devel gcc gcc-c++ gcc-gfortran openssl-devel libxml2-devel boost-devel net-tools readline-devel pam-devel perl-ExtUtils-MakeMaker 
+```
+Find the new volume on the headnode with (most likely it will mount as sdb):
+```
+headnode] --> dmesg | grep sd
+[    1.715421] sd 2:0:0:0: [sda] 16777216 512-byte logical blocks: (8.58 GB/8.00 GiB)
+[    1.718439] sd 2:0:0:0: [sda] Write Protect is off
+[    1.720066] sd 2:0:0:0: [sda] Mode Sense: 63 00 00 08
+[    1.720455] sd 2:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[    1.725878]  sda: sda1
+[    1.727563] sd 2:0:0:0: [sda] Attached SCSI disk
+[    2.238056] XFS (sda1): Mounting V5 Filesystem
+[    2.410020] XFS (sda1): Ending clean mount
+[    7.997131] Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+[    8.539042] sd 2:0:0:0: Attached scsi generic sg0 type 0
+[    8.687877] fbcon: cirrusdrmfb (fb0) is primary device
+[    8.719492] cirrus 0000:00:02.0: fb0: cirrusdrmfb frame buffer device
+[  246.622485] sd 2:0:0:1: Attached scsi generic sg1 type 0
+[  246.633569] sd 2:0:0:1: [sdb] 20971520 512-byte logical blocks: (10.7 GB/10.0 GiB)
+[  246.667567] sd 2:0:0:1: [sdb] Write Protect is off
+[  246.667923] sd 2:0:0:1: [sdb] Mode Sense: 63 00 00 08
+[  246.678696] sd 2:0:0:1: [sdb] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[  246.793574] sd 2:0:0:1: [sdb] Attached SCSI disk
+```
+
+Create a new filesystem on the device:
+```
+headnode] --> mkfs.xfs /dev/sdb
+```
+
+Now, find the UUID of your new filesystem, add it to fstab, and mount:
+```
+headnode] --> ls -l /dev/disk/by-uuid
+UUID_OF_ROOT  /dev/sda
+UUID_OF_NEW   /dev/sdb
+headnode] --> vi /etc/fstab
+#Add the line: 
+UUID=UUID_OF_NEW   /export   xfs    defaults   0 0
+headnode] --> mkdir /export
+headnode] --> mount -a
+```
+
+
