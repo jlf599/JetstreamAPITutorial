@@ -482,3 +482,4 @@ https://github.com/ECoulter/Jetstream_Elastic_Slurm
 https://github.com/hpc-cloud-toolkit/ostack-hpc
 
 
+*Meta: Goo.gl link: https://goo.gl/8ke2fu
