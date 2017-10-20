@@ -72,7 +72,7 @@ openstack image list | grep JS-API-Featured
 * openstack help [NOUN [VERB [PARAMETER]]]
 * openstack NOUN VERB -h will also produce the help documentation
 * Common NOUNs include image, server, volume, network, subnet, router, port, etc.
-* Common verbs are list, show, set, create, delete, etc.
+* Common verbs are list, show, set, unset, create, delete, add, remove, etc.
 * Two commonly used verbs are list and show
 * list will show everything that your project is allowed to view
 * show takes a name or UUID and shows the details of the specified entity
@@ -182,6 +182,18 @@ openstack keypair list
 ssh-keygen -lf ${OS_USERNAME}-api-key
 ```
 
+## Looking at Horizon
+
+```iu.jetstream-cloud.org/dashboard```
+
+with your tg???? id, to monitor your build progress on the Horizon interface.
+You will also be able to view other trainees instances and networks - **PLEASE do not delete 
+or modify anything that isn't yours!**
+
+After the network creation, let's look at Horizon again to see the changes.
+
+## A brief look at volumes
+
 ## Create and configure the network (this is usually only done once)
 
 Create the network
@@ -196,7 +208,7 @@ List the networks; do you see yours?
 openstack network list
 ```
 
-Create a subnet within your network. *Note the X & Y in the address range. Each student in this class (technically, this OpenStack project) will need to use a unique subnet range
+Create a subnet within your network. 
 
 If you want to list the subnets that have been created, just in case
 
@@ -235,6 +247,12 @@ Note the details of your router
 ```
 openstack router show ${OS_USERNAME}-api-router
 ```
+
+### Stopping and smelling the roses
+
+Well, looking at the changes in Horizon -
+
+```iu.jetstream-cloud.org/dashboard```
 
 ## Start an instance
 
@@ -287,16 +305,6 @@ ssh centos@<your.ip.number.here> *or*
 ssh ubuntu@<your.ip.number.here>
 
 ```
-
-## Looking at Horizon
-
-```iu.jetstream-cloud.org/dashboard```
-
-with your tg???? id, to monitor your build progress on the Horizon interface.
-You will also be able to view other trainees instances and networks - **PLEASE do not delete 
-or modify anything that isn't yours!**
-
-## A brief look at volumes
 
 Creating a volume:
 
