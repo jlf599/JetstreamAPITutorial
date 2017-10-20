@@ -478,8 +478,8 @@ A tutorial was presented at the PEARC17 conference on how to build a SLURM HPC c
 The tutorial assumes that a node at IP 149.165.157.95 is running that you need to login to as a first step. (Similar to this exercise.) This node was provided as an easy way to run the class and its only purpose was to provide a host with the openstack CLI clients installed. You can safely skip this step and proceed with executing the openstack commands you see in the tutorial.
 
 There are also two projects going on for virtual clustering:
-https://github.com/ECoulter/Jetstream_Elastic_Slurm
-https://github.com/hpc-cloud-toolkit/ostack-hpc
+* https://github.com/ECoulter/Jetstream_Elastic_Slurm
+* https://github.com/hpc-cloud-toolkit/ostack-hpc
 
 
 *Meta: Goo.gl link: https://goo.gl/8ke2fu
