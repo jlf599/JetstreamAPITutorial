@@ -154,10 +154,10 @@ openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.
 Look at your security group (optional)
 
 ```
-openstack security group show global-ssh 
+openstack security group show ${OS_USERNAME}-global-ssh
 ```
 
-Adding/removing security groups after an instance is running
+Adding/removing security groups after an instance is running (you don't have a server running yet so these will produce an error -- it's just information you might need later).
 
 ```
 openstack server add    security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
