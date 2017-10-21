@@ -193,9 +193,11 @@ ssh-keygen -l -E md5 -f ${OS_USERNAME}-api-key
 
 ## Looking at Horizon
 
+Open a new tab or window to
+
 ### https://iu.jetstream-cloud.org/dashboard/
 
-with your tg???? id, to monitor your build progress on the Horizon interface.
+with your tg???? id and password (in your openrc.sh file), to monitor your build progress on the Horizon interface.
 You will also be able to view other trainees instances and networks - **PLEASE do not delete 
 or modify anything that isn't yours!**
 
