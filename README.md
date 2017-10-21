@@ -395,9 +395,10 @@ cd /
 umount /testmount
 ```
 
-Disconnect from the VM and do this from the shell host:
+Do this from the shell host:
 ```
 openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+openstack volume delete ${OS_USERNAME}-10GVolume
 ```
 
 
