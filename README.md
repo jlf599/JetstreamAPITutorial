@@ -31,6 +31,8 @@ To access the client server, use your provided username and password, and log in
 ssh your_training_user@tutorial.jetstream-cloud.org
 ```
 
+You'll actually want to have **TWO** connections to this host. The reasons will be more obvious later.
+
 You may experience a delay after typing in your password - this is normal! Don't cancel your connection.
 
 ## Configure openstack client
@@ -316,7 +318,7 @@ Is the instance reachable?
 ping <your.ip.number.here>
 ```
 
-In a new terminal window and/or with your favorite ssh client
+In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!)
 
 ```
 ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
@@ -338,7 +340,7 @@ Now, add the new storage device to your VM:
 openstack server add volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
 ```
 
-Let's ssh in and get the volume working (if you're not still logged in via another window):
+Let's ssh in and get the volume working (if you're not still logged in via the other window):
 
 ```
 ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
