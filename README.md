@@ -495,6 +495,12 @@ Delete the network
 openstack network delete ${OS_USERNAME}-api-net
 ```
 
+Delete the security group
+
+```
+openstack security group delete ${OS_USERNAME}-global-ssh
+```
+
 For further investigation…
 A tutorial was presented at the PEARC17 conference on how to build a SLURM HPC cluster with OpenStack - https://github.com/ECoulter/Tutorial_Practice
 
