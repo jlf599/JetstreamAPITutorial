@@ -188,7 +188,7 @@ openstack keypair list
 **If you want to be 100% sure, you can show the fingerprint of your key with
 
 ```
-ssh-keygen -lf ${OS_USERNAME}-api-key
+ssh-keygen -l -E md5 -f ${OS_USERNAME}-api-key
 ```
 
 ## Looking at Horizon
