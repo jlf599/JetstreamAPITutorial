@@ -229,10 +229,10 @@ If you want to list the subnets that have been created, just in case
 openstack subnet list
 ```
 
-Then create your subnet
+Then create your subnet - notice that you can all use the same 10.0.0.0 network. You *can* use a different address space, but you don't have to.
 
 ```
-openstack subnet create --network ${OS_USERNAME}-api-net --subnet-range 10.X.Y.0/24 ${OS_USERNAME}-api-subnet1
+openstack subnet create --network ${OS_USERNAME}-api-net --subnet-range 10.0.0.0/24 ${OS_USERNAME}-api-subnet1
 ```
 
 Create a router
