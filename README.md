@@ -85,6 +85,15 @@ openstack image show JS-API-Featured-Centos7-Sep-27-2017
 openstack image show 76f30c17-a7e1-4253-97c8-ae0363e45612
 ```
 
+It's also important to note that the OpenStack CLI client offers help for the commands
+
+E.g.
+
+```
+openstack help image
+openstack help image show
+```
+
 ## Names verses UUIDs
 * Names and Universally Unique Identifier (UUID) are interchangeable on the command line
 * IMPORTANT POINT TO NOTE: OpenStack will let you name two or more entities with the same names. If you run into problems controlling something via its name, then fall back to the UUID of the entity.
