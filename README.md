@@ -314,12 +314,19 @@ Is the instance reachable?
 
 ```
 ping <your.ip.number.here>
+```
+
+In a new terminal window and/or with your favorite ssh client
+
+```
 ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
 ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 
 ```
 
 Creating a volume:
+
+Back in your openstack window, do the following:
 
 ```
 openstack volume create --size 10 ${OS_USERNAME}-10GVolume
