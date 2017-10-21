@@ -184,7 +184,7 @@ ssh-keygen -lf ${OS_USERNAME}-api-key
 
 ## Looking at Horizon
 
-```iu.jetstream-cloud.org/dashboard```
+### https://iu.jetstream-cloud.org/dashboard/
 
 with your tg???? id, to monitor your build progress on the Horizon interface.
 You will also be able to view other trainees instances and networks - **PLEASE do not delete 
@@ -252,7 +252,7 @@ openstack router show ${OS_USERNAME}-api-router
 
 Well, looking at the changes in Horizon -
 
-```iu.jetstream-cloud.org/dashboard```
+### https://iu.jetstream-cloud.org/dashboard/
 
 ## Start an instance
 
