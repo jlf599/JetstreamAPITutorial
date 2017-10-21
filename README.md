@@ -179,7 +179,7 @@ Upload your key to OpenStack
 openstack keypair create --public-key ${OS_USERNAME}-api-key.pub ${OS_USERNAME}-api-key
 ```
 
-Look at your keys (option)
+Look at your keys (optional)
 
 ```
 openstack keypair list
