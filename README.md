@@ -338,11 +338,11 @@ Now, add the new storage device to your VM:
 openstack server add volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
 ```
 
-Let's ssh in and get the volume working:
+Let's ssh in and get the volume working (if you're not still logged in via another window):
 
 ```
-ssh centos@<your.ip.number.here> *or*
-ssh ubuntu@<your.ip.number.here>
+ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
+ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 ```
 
 Become root on your VM: (otherwise, you'll have to preface much of the following with sudo)
