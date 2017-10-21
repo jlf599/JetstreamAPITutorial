@@ -201,6 +201,8 @@ with your tg???? id and password (in your openrc.sh file), to monitor your build
 You will also be able to view other trainees instances and networks - **PLEASE do not delete 
 or modify anything that isn't yours!**
 
+And let's talk a bit here about Horizon, what it is, and why we're using the CLI and not this GUI...
+
 After the network creation, let's look at Horizon again to see the changes.
 
 ## A brief look at volumes
