@@ -314,8 +314,8 @@ Is the instance reachable?
 
 ```
 ping <your.ip.number.here>
-ssh centos@<your.ip.number.here> *or*
-ssh ubuntu@<your.ip.number.here>
+ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
+ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 
 ```
 
