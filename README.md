@@ -79,12 +79,12 @@ openstack image list | grep JS-API-Featured
 * list will show everything that your project is allowed to view
 * show takes a name or UUID and shows the details of the specified entity
 
-E.g.
+E.g. 
 
 ```
 openstack image list
-openstack image show JS-API-Featured-Centos7-Sep-27-2017
-openstack image show 76f30c17-a7e1-4253-97c8-ae0363e45612
+openstack image show JS-API-Featured-Centos7-Oct-21-2017
+openstack image show 479c5802-de20-497a-bc0d-8f2f1816801d
 ```
 
 It's also important to note that the OpenStack CLI client offers help for the commands
@@ -102,8 +102,6 @@ openstack help image show
 * Once you have two entities with the same name, your only recourse is to use the UUID
 
 ## Creating the cyberinfrastructure and booting your first instance
-We will be following the short tutorial on the Jetstream documentation wiki 
-http://wiki.jetstream-cloud.org/OpenStack+command+line
 
 It is informative to follow what’s happening in the Horizon dashboard as you execute commands. Keep in mind that in OpenStack everything is project based. Everyone in this tutorial is in the same OpenStack project. In the Horizon dashboard you will see the results of all the other students commands as they execute them. You can also affect other objects in your project, so **tread carefully and don't delete someone else's work!** 
 
@@ -285,12 +283,12 @@ openstack image list --limit 500 | grep JS-API-Featured
 
 *Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image
 
-Time to boot your instance
+Time to boot your instance -- please note that the image will change! They are updated and named with the date.
 
 ```
 openstack server create ${OS_USERNAME}-api-U-1 \
 --flavor m1.tiny \
---image JS-API-Featured-Centos7-Sep-27-2017 \
+--image JS-API-Featured-Centos7-Oct-21-2017 \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net
@@ -501,6 +499,11 @@ Delete the security group
 openstack security group delete ${OS_USERNAME}-global-ssh
 ```
 
+Delete the key pair
+```
+openstack keypair delete ${OS_USERNAME}-api-key
+```
+
 For further investigation…
 A tutorial was presented at the PEARC17 conference on how to build a SLURM HPC cluster with OpenStack - https://github.com/ECoulter/Tutorial_Practice
 
@@ -512,5 +515,3 @@ There are also two projects going on for virtual clustering:
 
 
 *Meta: Goo.gl link: https://goo.gl/8ke2fu
-
-*Meta: G@t3w@ysN0w
