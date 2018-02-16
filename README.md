@@ -5,6 +5,16 @@ The OpenStack command line interface (CLI) is only one way to interact with Open
 
 We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from https://pypi.python.org/pypi/python-openstackclient
 
+Instructions for installing clients for multiple operating systems is here: https://docs.openstack.org/mitaka/user-guide/common/cli_install_openstack_command_line_clients.html
+
+Note that many people prefer installing in a virtualenv. An example of that would be:
+```
+[user@localhost]$ virtualenv ~/venv
+[user@localhost]$ source ~/venv/bin/activate
+(venv)user@localhost$ pip install python-openstackclient
+```
+Also note that we will **NOT** be installing the clients for this tutorial.
+
 ## Some background getting started Jetstream Documentation
 
 Getting started with the Jetstream’s OpenStack API
