@@ -1,5 +1,5 @@
-To set passwords via 
+To set passwords via cleartext
 
-cleartext `awk '{ system("echo " $1":"$2" |chpasswd") }' userlist.txt`
+`awk '{ system("echo " $1":"$2" |chpasswd") }' userlist.txt`
 
 Assuming a file with username in col 1 and pass in col 2
