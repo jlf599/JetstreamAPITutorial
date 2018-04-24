@@ -15,11 +15,9 @@ final_message: "Boot completed in $UPTIME seconds"
 
 Create the accounts:
 
-`cat list.txt| awk '{print "adduser -p " $1 $2}'`  
+list.txt should just have usernames in a text file, one per line
 
-and then 
-
-`cat ~jfischer/account.list | while read -r line; do $line ; done`
+`cat list.txt| awk '{print "adduser " $1}'`  
 
 -----------------
 To set passwords via cleartext:
