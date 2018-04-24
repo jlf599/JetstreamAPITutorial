@@ -1,5 +1,13 @@
-To set passwords via cleartext
+To set passwords via cleartext:
 
 `awk '{ system("echo " $1":"$2" |chpasswd") }' userlist.txt`
 
 Assuming a file with username in col 1 and pass in col 2
+
+----
+Generate openrc for the API class host:
+
+for user in $(awk '{print $4'} account.list)
+do
+  awk -v user="$user" '$0 ~ user {print "export OS_PROJECT_DOMAIN_NAME=tacc \nexport OS_USER_DOMAIN_NAME=tacc \nexport OS_PROJECT_NAME=tg-trA100001s \nexport OS_USERNAME="$4"\nexport OS_PASSWORD='\''" $3 "'\'' \nexport OS_AUTH_URL=https://iu.jetstream-cloud.org:35357/v3 \nexport OS_IDENTITY_API_VERSION=3" }' account.list > /home/$user/openrc.sh
+done
