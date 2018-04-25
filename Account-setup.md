@@ -17,7 +17,7 @@ Create the accounts:
 
 list.txt should just have usernames in a text file, one per line -- or any other delimited file you can awk cleanly
 
-*Make sure the list isn't dos format (vi will say [dos] at the bottom -- not sure about other editors) - you can easily fix this in vi by opening the file, doing :set ff=unix, and then saving the file.
+*Make sure the list isn't dos format (vi will say [dos] at the bottom -- not sure about other editors) - you can easily fix this in vi by opening the file, doing :set ff=unix, and then saving the file.*
 
 `cat list.txt| awk '{system("adduser " $1)}'`  
 
