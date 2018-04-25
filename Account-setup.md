@@ -21,6 +21,21 @@ list.txt should just have usernames in a text file, one per line -- or any other
 
 If you're using an Atmo instance, you'll either need to add these accounts to the users group (which might inadvertantly give them sudo access) or create a new group to add them to -- which you'll then need to add to the sshd_config at the bottom.
 
+```[js-156-117] root ~-->tail /etc/ssh/sshd_config
+#AllowTcpForwarding no
+#PermitTTY no
+#ForceCommand cvs server
+PermitRootLogin without-password
+
+UseDNS no
+Port 22
+AllowGroups users root train
+```
+
+`groupadd train`
+
+`awk '{system("usermod -G train " $1)}' passlist.txt`
+
 -----------------
 To set passwords via cleartext:
 
