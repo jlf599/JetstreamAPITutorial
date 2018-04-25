@@ -1,4 +1,4 @@
-Add this to /etc/skel:
+Add this to /etc/skel -- this stops the forced updates. Not a best practice but in the name of expediency for a tutorial, it's necessary.
 
 vi cloud.cfg
 
