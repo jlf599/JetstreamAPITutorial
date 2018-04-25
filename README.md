@@ -298,10 +298,12 @@ Time to boot your instance -- please note that the image will change! They are u
 ```
 openstack server create ${OS_USERNAME}-api-U-1 \
 --flavor m1.tiny \
---image JS-API-Featured-Centos7-Oct-21-2017 \
+--image JS-API-Featured-CentOS7-Apr-10-2018 \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
---nic net-id=${OS_USERNAME}-api-net
+--nic net-id=${OS_USERNAME}-api-net \
+--user-data cloud.cfg \
+--wait
 ```
 
 *Note that ${OS_USERNAME}-api-U-1 is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
