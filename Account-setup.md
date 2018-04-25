@@ -17,7 +17,8 @@ Create the accounts:
 
 list.txt should just have usernames in a text file, one per line
 
-`cat list.txt| awk '{print "adduser " $1}'`  
+`cat list.txt| awk '{system("adduser " $1)}'`  
+
 
 -----------------
 To set passwords via cleartext:
