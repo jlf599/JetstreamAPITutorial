@@ -50,11 +50,13 @@ Assuming a file with username in col 1 and pass in col 2
 -----------------
 Generate openrc for the API class host -- make sure the allocation/PROJECT_NAME is correct as that can possibly change. Also, make sure you set the ENDPOINT
 
-This assumes your input file has files XSEDE_Username XSEDE_Password TACC_Username TACC_Password --> change the awk vars as needed if you format varies. 
+This assumes your input file has fields 
+XSEDE_Username XSEDE_Password TACC_Username TACC_Password 
+--> change the awk vars as needed if you format varies. 
 
-for user in $(awk '{print $4'} account.list)
+`for user in $(awk '{print $4'} account.list)
 do
   awk -v user="$user" '$0 ~ user {print "export OS_PROJECT_DOMAIN_NAME=tacc \nexport OS_USER_DOMAIN_NAME=tacc \nexport OS_PROJECT_NAME=TG-CDA170005 \nexport OS_USERNAME="$3"\nexport OS_PASSWORD='\''" $4 "'\'' \nexport OS_AUTH_URL=ENDPOINT_URL_GOES_HERE \nexport OS_IDENTITY_API_VERSION=3" }' account.list > /home/$user/openrc.sh
-done
+done`
 
 
