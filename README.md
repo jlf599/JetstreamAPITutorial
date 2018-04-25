@@ -215,8 +215,6 @@ And let's talk a bit here about Horizon, what it is, and why we're using the CLI
 
 After the network creation, let's look at Horizon again to see the changes.
 
-## A brief look at volumes
-
 ## Create and configure the network (this is usually only done once)
 
 Create the network
@@ -335,6 +333,7 @@ ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
 ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 
 ```
+## A brief look at volumes
 
 Creating a volume:
 
