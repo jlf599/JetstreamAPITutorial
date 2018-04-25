@@ -15,7 +15,7 @@ final_message: "Boot completed in $UPTIME seconds"
 
 Create the accounts:
 
-list.txt should just have usernames in a text file, one per line
+list.txt should just have usernames in a text file, one per line -- or any other delimited file you can awk cleanly
 
 `cat list.txt| awk '{system("adduser " $1)}'`  
 
