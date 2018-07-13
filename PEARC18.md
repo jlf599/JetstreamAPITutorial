@@ -170,8 +170,8 @@ openstack security group show ${OS_USERNAME}-global-ssh
 Adding/removing security groups after an instance is running (you don't have a server running yet so these will produce an error -- it's just information you might need later).
 
 ```
-openstack server add    security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
-openstack server remove security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
+openstack server add    security group ${OS_USERNAME}-headnode ${OS_USERNAME}-global-ssh
+openstack server remove security group ${OS_USERNAME}-headnode ${OS_USERNAME}-global-ssh
 ```
 
 *Note: that when you change the rules within a security group you are changing them in real-time on running instances. When we boot the instance below, we will specify which security groups we want to associate to the running instance.*
@@ -315,13 +315,13 @@ Create an IP address…
 openstack floating ip create public
 ```
 
-…then add that IP address to your running instance.
+…then add that IP address to your running instance. Substitute the actual IP number you just got for the *<your.ip.number.here>*
 
 ```
 openstack server add floating ip ${OS_USERNAME}-headnode <your.ip.number.here>
 ```
 
-Is the instance reachable?
+Is the instance reachable? Substitute the actual IP number you just got for the *<your.ip.number.here>*
 
 ```
 ping <your.ip.number.here>
@@ -329,8 +329,13 @@ ping <your.ip.number.here>
 
 In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!)
 
+Substitute the actual IP number you just got for the *<your.ip.number.here>*
+
 ```
-ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
+ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> 
+
+*or if you were using an Ubuntu image*
+
 ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 
 ```
@@ -350,10 +355,13 @@ Now, add the new storage device to your VM:
 openstack server add volume ${OS_USERNAME}-headnode ${OS_USERNAME}-10GVolume
 ```
 
-Let's ssh in and get the volume working (if you're not still logged in via the other window):
+Let's ssh in and get the volume working (if you're not still logged in via the other window). Substitute the actual IP number you just got for the *<your.ip.number.here>*
 
 ```
-ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
+ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> 
+
+*or*
+
 ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 ```
 
@@ -423,41 +431,41 @@ add this line:
 Reboot the instance (shutdown -r now).
 
 ```
-openstack server reboot ${OS_USERNAME}-api-U-1
+openstack server reboot ${OS_USERNAME}-headnode
 
 or
 
-openstack server reboot ${OS_USERNAME}-api-U-1 --hard
+openstack server reboot ${OS_USERNAME}-headnode --hard
 ```
 
 Stop the instance (shutdown -h now). Note that state is not retained and that resources are still reserved on the compute host so that when you decide restart the instance, resources are available to activate the instance.
 
 ```
-openstack server stop ${OS_USERNAME}-api-U-1
-openstack server start ${OS_USERNAME}-api-U-1
+openstack server stop ${OS_USERNAME}-headnode
+openstack server start ${OS_USERNAME}-headnode
 ```
 
 Pause the instance Note that your instance still remains in memory, state is retained, and resources continue to be reserved on the compute host assuming that you will be restarting the instance.
 
 ```
-openstack server pause   ${OS_USERNAME}-api-U-1
-openstack server unpause ${OS_USERNAME}-api-U-1
+openstack server pause   ${OS_USERNAME}-headnode
+openstack server unpause ${OS_USERNAME}-headnode
 ```
 
 Put the instance to sleep; similar to closing the lid on your laptop. 
 Note that resources are still reserved on the compute host for when you decide restart the instance
 
 ```
-openstack server suspend ${OS_USERNAME}-api-U-1
-openstack server resume  ${OS_USERNAME}-api-U-1
+openstack server suspend ${OS_USERNAME}-headnode
+openstack server resume  ${OS_USERNAME}-headnode
 ```
 
 Shut the instance down and move to storage. Memory state is not maintained. Ephemeral storage is maintained. 
 Note that resources are still reserved on the compute host for when you decide restart the instance
 
 ```
-openstack server shelve ${OS_USERNAME}-api-U-1
-openstack server unshelve ${OS_USERNAME}-api-U-1
+openstack server shelve ${OS_USERNAME}-headnode
+openstack server unshelve ${OS_USERNAME}-headnode
 ```
 
 ## Dismantling what we have built once we've finished the entire tutorial 
@@ -475,7 +483,7 @@ openstack server remove volume ${OS_USERNAME}-headnode ${OS_USERNAME}-10GVolume
 openstack volume delete ${OS_USERNAME}-10GVolume
 ```
 
-Remove the IP from the instance
+Remove the IP from the instance. Substitute the actual IP number you just got for the *<your.ip.number.here>*
 
 ```
 openstack server remove floating ip ${OS_USERNAME}-headnode <your.ip.number.here>
