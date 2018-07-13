@@ -471,14 +471,14 @@ umount /export
 
 Do this from the shell host:
 ```
-openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+openstack server remove volume ${OS_USERNAME}-headnode ${OS_USERNAME}-10GVolume
 openstack volume delete ${OS_USERNAME}-10GVolume
 ```
 
 Remove the IP from the instance
 
 ```
-openstack server remove floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
+openstack server remove floating ip ${OS_USERNAME}-headnode <your.ip.number.here>
 ```
 
 Return the IP to the pool
@@ -490,7 +490,7 @@ openstack floating ip delete <your.ip.number.here>
 Delete the instance
 
 ```
-openstack server delete ${OS_USERNAME}-api-U-1
+openstack server delete ${OS_USERNAME}-headnode
 ```
 
 Unplug your router from the public network
