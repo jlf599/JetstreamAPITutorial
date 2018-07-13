@@ -466,7 +466,7 @@ Note that infrastructure such as networks, routers, subnets, etc. only need to b
 Let's clean up the volume (from the instance):
 ```
 cd /
-umount /testmount
+umount /export
 ```
 
 Do this from the shell host:
