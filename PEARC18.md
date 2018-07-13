@@ -293,7 +293,7 @@ openstack image list --limit 500 | grep JS-API-Featured
 
 Time to boot your instance -- 
 ```
-openstack server create ${OS_USERNAME}-api-U-1 \
+openstack server create ${OS_USERNAME}-headnode \
 --flavor m1.small \
 --image PEARC18-tutorial-headnode \
 --key-name ${OS_USERNAME}-api-key \
@@ -303,7 +303,7 @@ openstack server create ${OS_USERNAME}-api-U-1 \
 --wait
 ```
 
-*Note that ${OS_USERNAME}-api-U-1 is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
+*Note that ${OS_USERNAME}-headnode is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
 
 *Note on patching 
 
@@ -318,7 +318,7 @@ openstack floating ip create public
 …then add that IP address to your running instance.
 
 ```
-openstack server add floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
+openstack server add floating ip ${OS_USERNAME}-headnode <your.ip.number.here>
 ```
 
 Is the instance reachable?
@@ -347,7 +347,7 @@ openstack volume create --size 10 ${OS_USERNAME}-10GVolume
 Now, add the new storage device to your VM:
 
 ```
-openstack server add volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+openstack server add volume ${OS_USERNAME}-headnode ${OS_USERNAME}-10GVolume
 ```
 
 Let's ssh in and get the volume working (if you're not still logged in via the other window):
@@ -363,8 +363,15 @@ sudo su -
 ```
 
 Find the new volume on the headnode with (most likely it will mount as sdb):
+
+The command is: 
 ```
-[root@tg455656-headnode ~]# <span style="color:blue">dmesg | grep sd</span>
+dmesg | grep sd
+```
+
+Example output should look something like this:
+```
+[root@tg455656-headnode ~]# dmesg | grep sd
 [    1.715421] sd 2:0:0:0: [sda] 16777216 512-byte logical blocks: (8.58 GB/8.00 GiB)
 [    1.718439] sd 2:0:0:0: [sda] Write Protect is off
 [    1.720066] sd 2:0:0:0: [sda] Mode Sense: 63 00 00 08
@@ -394,25 +401,24 @@ mkfs.xfs /dev/sdb
 Create a directory for the mount point and mount it (on the VM):
 
 ```
-mkdir /testmount
-mount /dev/sdb /testmount
+mkdir /export
+mount /dev/sdb /export
 df -h
 ```
 
-Let's clean up the volume (from the instance):
+Let's add it to the /etc/fstab so it's persistent:
 ```
-cd /
-umount /testmount
+vi /etc/fstab 
+```
+**you can use nano or emacs, but I'll judge you**
+
+add this line:
+```
+/dev/sdb /export xfs defaults 1 2
 ```
 
-Do this from the shell host:
-```
-openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
-openstack volume delete ${OS_USERNAME}-10GVolume
-```
-
-
-## Putting our instance into a non-running state
+## DO NOT DO THESE -- THIS IS FOR INFORMATION PURPOSES ONLY
+## Putting our instance into a non-running state 
 
 Reboot the instance (shutdown -r now).
 
@@ -454,8 +460,20 @@ openstack server shelve ${OS_USERNAME}-api-U-1
 openstack server unshelve ${OS_USERNAME}-api-U-1
 ```
 
-## Dismantling what we have built
+## Dismantling what we have built once we've finished the entire tutorial 
 Note that infrastructure such as networks, routers, subnets, etc. only need to be created once and are usable by all members of the project. These steps are included for completeness. And, to clean up for the next class.
+
+Let's clean up the volume (from the instance):
+```
+cd /
+umount /testmount
+```
+
+Do this from the shell host:
+```
+openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+openstack volume delete ${OS_USERNAME}-10GVolume
+```
 
 Remove the IP from the instance
 
