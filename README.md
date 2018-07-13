@@ -137,7 +137,7 @@ openstack security group create --description "ssh & icmp enabled" ${OS_USERNAME
 Create a rule for allowing ssh inbound from an IP address
 
 ```
-openstack security group rule create --proto tcp --dst-port 22:22 --src-ip 0.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0 ${OS_USERNAME}-global-ssh
 ```
 
 Create a rule that allows ping and other ICMP packets
@@ -150,15 +150,15 @@ openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
 Optional rule to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for comminications amongst all those instances. *We won't need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
 ```
 
 A better (more restrictive) example might be: *We will continue to not need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
 ```
 
 Look at your security group (optional)
@@ -316,22 +316,25 @@ Create an IP address…
 openstack floating ip create public
 ```
 
-…then add that IP address to your running instance.
+…then add that IP address to your running instance. Substitute the actual IP number you just got for the <your.ip.number.here>
 
 ```
 openstack server add floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
 ```
 
-Is the instance reachable?
+Is the instance reachable? Substitute the actual IP number you got for the <your.ip.number.here>
 
 ```
 ping <your.ip.number.here>
 ```
 
-In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!)
+In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!). Substitute the actual IP number you got for the <your.ip.number.here>
 
 ```
-ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
+ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> 
+
+*or if you were using an Ubuntu image*
+
 ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 
 ```
@@ -351,10 +354,13 @@ Now, add the new storage device to your VM:
 openstack server add volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
 ```
 
-Let's ssh in and get the volume working (if you're not still logged in via the other window):
+Let's ssh in and get the volume working (if you're not still logged in via the other window). Substitute the actual IP number you just got for the <your.ip.number.here>.
 
 ```
-ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> *or*
+ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> 
+
+*or if you were using an Ubuntu image*
+
 ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
 ```
 
@@ -363,9 +369,16 @@ Become root on your VM: (otherwise, you'll have to preface much of the following
 sudo su -
 ```
 
-Find the new volume on the headnode with (most likely it will mount as sdb):
+Find the new volume on the headnode with (most likely it will mount as sdb). The command is:
+
 ```
-[Tutorial] root ~--> dmesg | grep sd
+dmesg | grep sd
+```
+
+And the output should look something like this:
+
+```
+root@tg455656-headnode ~]# dmesg | grep sd
 [    1.715421] sd 2:0:0:0: [sda] 16777216 512-byte logical blocks: (8.58 GB/8.00 GiB)
 [    1.718439] sd 2:0:0:0: [sda] Write Protect is off
 [    1.720066] sd 2:0:0:0: [sda] Mode Sense: 63 00 00 08
@@ -412,7 +425,7 @@ openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
 openstack volume delete ${OS_USERNAME}-10GVolume
 ```
 
-
+## DO NOT DO THESE -- THIS IS FOR INFORMATION PURPOSES ONLY ##
 ## Putting our instance into a non-running state
 
 Reboot the instance (shutdown -r now).
@@ -458,13 +471,13 @@ openstack server unshelve ${OS_USERNAME}-api-U-1
 ## Dismantling what we have built
 Note that infrastructure such as networks, routers, subnets, etc. only need to be created once and are usable by all members of the project. These steps are included for completeness. And, to clean up for the next class.
 
-Remove the IP from the instance
+Remove the IP from the instance. Substitute the actual IP number you got for the <your.ip.number.here>.
 
 ```
 openstack server remove floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
 ```
 
-Return the IP to the pool
+Return the IP to the pool. Substitute the actual IP number you got for the <your.ip.number.here>
 
 ```
 openstack floating ip delete <your.ip.number.here>
