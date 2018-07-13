@@ -137,7 +137,7 @@ openstack security group create --description "ssh & icmp enabled" ${OS_USERNAME
 Create a rule for allowing ssh inbound from an IP address
 
 ```
-openstack security group rule create --proto tcp --dst-port 22:22 --src-ip 0.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0 ${OS_USERNAME}-global-ssh
 ```
 
 Create a rule that allows ping and other ICMP packets
@@ -147,14 +147,14 @@ openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
 ```
 *There's a reason to allow icmp. It's a contentious topic, but we recommend leaving it open. http://shouldiblockicmp.com/
 
-Optional rule to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for comminications amongst all those instances. *We won't need this today*
+Let's allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for communications amongst all those instances (assumes your internal network will be 10.0.0.0/0). 
 
 ```
 openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
 openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
 ```
 
-A better (more restrictive) example might be: *We will continue to not need this today*
+A better (more restrictive) example might be: *We won't need this today*
 
 ```
 openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
@@ -364,7 +364,7 @@ sudo su -
 
 Find the new volume on the headnode with (most likely it will mount as sdb):
 ```
-[Tutorial] root ~--> dmesg | grep sd
+[root@tg455656-headnode ~]# <span style="color:blue">dmesg | grep sd</span>
 [    1.715421] sd 2:0:0:0: [sda] 16777216 512-byte logical blocks: (8.58 GB/8.00 GiB)
 [    1.718439] sd 2:0:0:0: [sda] Write Protect is off
 [    1.720066] sd 2:0:0:0: [sda] Mode Sense: 63 00 00 08
