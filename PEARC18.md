@@ -150,15 +150,15 @@ openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
 Let's allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for communications amongst all those instances (assumes your internal network will be 10.0.0.0/0). 
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
 ```
 
 A better (more restrictive) example might be: *We won't need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --src-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
 ```
 
 Look at your security group (optional)
