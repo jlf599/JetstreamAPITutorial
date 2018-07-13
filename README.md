@@ -93,8 +93,8 @@ E.g.
 
 ```
 openstack image list
-openstack image show JS-API-Featured-CentOS7-Apr-10-2018 
-openstack image show 6f31dd84-fbaa-4da1-890e-b8e7e654bc2f
+openstack image show JS-API-Featured-Centos7-Jul-2-2018
+openstack image show 70998b22-956f-471a-9b22-d8739eb25842
 ```
 
 It's also important to note that the OpenStack CLI client offers help for the commands
