@@ -309,6 +309,12 @@ openstack server create ${OS_USERNAME}-headnode \
 
 *Note on what all of those switches really mean
 
+You can actually see the console just as you would if you were watching it boot -- use the UID of the server you created:
+
+```
+openstack console log show UID_of_your_instance
+```
+
 Create an IP address…
 
 ```
