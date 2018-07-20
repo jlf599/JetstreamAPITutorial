@@ -93,8 +93,8 @@ E.g.
 
 ```
 openstack image list
-openstack image show JS-API-Featured-Centos7-Jul-2-2018
-openstack image show 70998b22-956f-471a-9b22-d8739eb25842
+openstack image show PEARC18-tutorial-headnode-stable
+openstack image show 2b1b1f0c-5346-42fb-a76b-f6568e155241
 ```
 
 It's also important to note that the OpenStack CLI client offers help for the commands
@@ -295,7 +295,7 @@ Time to boot your instance --
 ```
 openstack server create ${OS_USERNAME}-headnode \
 --flavor m1.small \
---image PEARC18-tutorial-headnode \
+--image PEARC18-tutorial-headnode-stable \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
