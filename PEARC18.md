@@ -97,6 +97,12 @@ openstack image show PEARC18-tutorial-headnode-stable
 openstack image show 2b1b1f0c-5346-42fb-a76b-f6568e155241
 ```
 
+You can also make the output look nicer in your terminal with the --fit-width option:
+
+```
+openstack image show JS-API-Featured-Centos7-Jul-2-2018 --fit-width
+```
+
 It's also important to note that the OpenStack CLI client offers help for the commands
 
 E.g.
