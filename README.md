@@ -97,6 +97,12 @@ openstack image show JS-API-Featured-Centos7-Jul-2-2018
 openstack image show 70998b22-956f-471a-9b22-d8739eb25842
 ```
 
+You can also make the output look nicer in your terminal with the --fit-width option:
+
+```
+openstack image show JS-API-Featured-Centos7-Jul-2-2018 --fit-width
+```
+
 It's also important to note that the OpenStack CLI client offers help for the commands
 
 E.g.
