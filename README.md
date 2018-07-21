@@ -548,4 +548,3 @@ There are also two projects going on for virtual clustering:
 
 *Meta: Goo.gl link: https://goo.gl/8ke2fu
 
-Th3R@inSP!
