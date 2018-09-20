@@ -103,6 +103,12 @@ You can also make the output look nicer in your terminal with the --fit-width op
 openstack image show JS-API-Featured-Centos7-Jul-2-2018 --fit-width
 ```
 
+You can make that permanent by adding 
+```
+CLIFF_FIT_WIDTH=1
+```
+to your environment.
+
 It's also important to note that the OpenStack CLI client offers help for the commands
 
 E.g.
