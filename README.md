@@ -156,15 +156,15 @@ openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
 Optional rule to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for comminications amongst all those instances. *We won't need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
 ```
 
 A better (more restrictive) example might be: *We will continue to not need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 ${OS_USERNAME}-global-ssh
 ```
 
 Look at your security group (optional)
@@ -302,7 +302,7 @@ Time to boot your instance -- **please note that the image will change**! They a
 ```
 openstack server create ${OS_USERNAME}-api-U-1 \
 --flavor m1.tiny \
---image JS-API-Featured-Centos7-Jul-2-2018 \
+--image JS-API-Featured-CentOS7-Feb-22-2019 \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
