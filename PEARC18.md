@@ -5,7 +5,12 @@ The OpenStack command line interface (CLI) is only one way to interact with Open
 
 We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from https://pypi.python.org/pypi/python-openstackclient
 
-Instructions for installing clients for multiple operating systems is here: https://docs.openstack.org/mitaka/user-guide/common/cli_install_openstack_command_line_clients.html
+The clients **REQUIRE** python2 presently! They will fail if you install with pip3/python3.
+
+Instructions for installing clients for multiple operating systems is here: 
+http://wiki.jetstream-cloud.org/Installing+the+Openstack+clients+on+Linux
+http://wiki.jetstream-cloud.org/Installing+the+Openstack+clients+on+OS+X
+https://docs.openstack.org/mitaka/user-guide/common/cli_install_openstack_command_line_clients.html 
 
 Note that many people prefer installing in a virtualenv. An example of that would be:
 ```
@@ -49,8 +54,11 @@ You may experience a delay after typing in your password - this is normal! Don't
 
 First, double-check the openrc.sh with your training account info - the file already exists in your home directory. Normally you'd have to create your own -- refer to http://wiki.jetstream-cloud.org/Setting+up+openrc.sh 
 
+```cat ./openrc.sh```
+
+should give you something like this:
+
 ```
-[Tutorial] train60 ~--> cat ./openrc.sh
 export OS_PROJECT_DOMAIN_NAME=tacc 
 export OS_USER_DOMAIN_NAME=tacc 
 export OS_PROJECT_NAME=TG-CDA170005 
@@ -105,7 +113,7 @@ openstack image show JS-API-Featured-Centos7-Jul-2-2018 --fit-width
 
 You can make that permanent by adding 
 ```
-CLIFF_FIT_WIDTH=1
+export CLIFF_FIT_WIDTH=1
 ```
 to your environment.
 
@@ -159,18 +167,18 @@ openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
 ```
 *There's a reason to allow icmp. It's a contentious topic, but we recommend leaving it open. http://shouldiblockicmp.com/
 
-Let's allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for communications amongst all those instances (assumes your internal network will be 10.0.0.0/0). 
+If you wanted to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for communications amongst all those instances (assumes your internal network will be 10.0.0.0/24). *We won't need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
 ```
 
 A better (more restrictive) example might be: *We won't need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 ${OS_USERNAME}-global-ssh
 ```
 
 Look at your security group (optional)
@@ -182,7 +190,7 @@ openstack security group show ${OS_USERNAME}-global-ssh
 Adding/removing security groups after an instance is running (you don't have a server running yet so these will produce an error -- it's just information you might need later).
 
 ```
-openstack server add    security group ${OS_USERNAME}-headnode ${OS_USERNAME}-global-ssh
+openstack server add security group ${OS_USERNAME}-headnode ${OS_USERNAME}-global-ssh
 openstack server remove security group ${OS_USERNAME}-headnode ${OS_USERNAME}-global-ssh
 ```
 
@@ -207,25 +215,11 @@ Look at your keys (optional)
 openstack keypair list
 ```
 
-**If you want to be 100% sure, you can show the fingerprint of your key with
+**If you want to be 100% sure, you can show the fingerprint of your key with the following command. It's a good habit to be in.
 
 ```
 ssh-keygen -l -E md5 -f ${OS_USERNAME}-api-key
 ```
-
-## Looking at Horizon
-
-Open a new tab or window to
-
-### https://iu.jetstream-cloud.org/dashboard/
-
-with your tg???? id and password (in your openrc.sh file), to monitor your build progress on the Horizon interface.
-You will also be able to view other trainees instances and networks - **PLEASE do not delete 
-or modify anything that isn't yours!**
-
-And let's talk a bit here about Horizon, what it is, and why we're using the CLI and not this GUI...
-
-After the network creation, let's look at Horizon again to see the changes.
 
 ## Create and configure the network (this is usually only done once)
 
@@ -285,7 +279,15 @@ openstack router show ${OS_USERNAME}-api-router
 
 Well, looking at the changes in Horizon -
 
+Open a new browser tab or window to
+
 ### https://iu.jetstream-cloud.org/dashboard/
+
+with your tg???? id and password (in your openrc.sh file), to monitor your build progress on the Horizon interface.
+You will also be able to view other trainees instances and networks - **PLEASE do not delete 
+or modify anything that isn't yours!**
+
+And let's talk a bit here about Horizon, what it is, and why we're using the CLI and not this GUI...
 
 ## Start an instance
 
@@ -301,13 +303,13 @@ Note the possible images that you can use on the API side of Jetstream.
 openstack image list --limit 500 | grep JS-API-Featured
 ```
 
-*Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image
+*Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image. The actual cluster tutorial used this image - PEARC18-tutorial-headnode-stable.
 
 Time to boot your instance -- 
 ```
 openstack server create ${OS_USERNAME}-headnode \
 --flavor m1.small \
---image PEARC18-tutorial-headnode-stable \
+--image JS-API-Featured-CentOS7-Feb-22-2019  \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
@@ -317,8 +319,8 @@ openstack server create ${OS_USERNAME}-headnode \
 
 *Note that ${OS_USERNAME}-headnode is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
 
+*Note on duplicate naming and UUIDs
 *Note on patching 
-
 *Note on what all of those switches really mean
 
 You can actually see the console just as you would if you were watching it boot -- use the UID of the server you created:
@@ -421,7 +423,7 @@ Example output should look something like this:
 Create a new filesystem on the device (from the VM):
 
 ```
-mkfs.xfs /dev/sdb
+mkfs.ext4 /dev/sdb
 ```
 
 Create a directory for the mount point and mount it (on the VM):
@@ -440,7 +442,7 @@ vi /etc/fstab
 
 add this line:
 ```
-/dev/sdb /export xfs defaults 1 2
+/dev/sdb /export ext4 defaults 1 2
 ```
 
 ## DO NOT DO THESE -- THIS IS FOR INFORMATION PURPOSES ONLY
@@ -461,13 +463,6 @@ Stop the instance (shutdown -h now). Note that state is not retained and that re
 ```
 openstack server stop ${OS_USERNAME}-headnode
 openstack server start ${OS_USERNAME}-headnode
-```
-
-Pause the instance Note that your instance still remains in memory, state is retained, and resources continue to be reserved on the compute host assuming that you will be restarting the instance.
-
-```
-openstack server pause   ${OS_USERNAME}-headnode
-openstack server unpause ${OS_USERNAME}-headnode
 ```
 
 Put the instance to sleep; similar to closing the lid on your laptop. 
@@ -561,6 +556,10 @@ openstack keypair delete ${OS_USERNAME}-api-key
 ```
 
 For further investigation…
+
+Look at the advanced topics on the Wiki - this includes this tutorial, the second portion where you would actually build a virtual cluster, and other advanced topics:
+http://wiki.jetstream-cloud.org/Advanced+API+Topics
+
 A tutorial was presented at the PEARC17 conference on how to build a SLURM HPC cluster with OpenStack - https://github.com/ECoulter/Tutorial_Practice
 
 The tutorial assumes that a node at IP 149.165.157.95 is running that you need to login to as a first step. (Similar to this exercise.) This node was provided as an easy way to run the class and its only purpose was to provide a host with the openstack CLI clients installed. You can safely skip this step and proceed with executing the openstack commands you see in the tutorial.
@@ -571,5 +570,6 @@ There are also two projects going on for virtual clustering:
 
 
 *Meta: Goo.gl link: https://goo.gl/7X3HQz
+*pass: xxxxxxxxx
 
  
