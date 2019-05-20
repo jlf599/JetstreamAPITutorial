@@ -309,7 +309,7 @@ Time to boot your instance --
 ```
 openstack server create ${OS_USERNAME}-headnode \
 --flavor m1.small \
---image JS-API-Featured-CentOS7-Feb-22-2019  \
+--image JS-API-Featured-CentOS7-May-20-2019  \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
