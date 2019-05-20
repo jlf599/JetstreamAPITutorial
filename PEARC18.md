@@ -570,6 +570,7 @@ There are also two projects going on for virtual clustering:
 
 
 *Meta: Goo.gl link: https://goo.gl/7X3HQz
-*pass: xxxxxxxxx
+
+*pass: r3se@rch1ng
 
  
