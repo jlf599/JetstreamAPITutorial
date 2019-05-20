@@ -93,15 +93,21 @@ E.g.
 
 ```
 openstack image list
-openstack image show JS-API-Featured-Centos7-Jul-2-2018
-openstack image show 70998b22-956f-471a-9b22-d8739eb25842
+openstack image show JS-API-Featured-CentOS7-May-20-2019
+openstack image show 368d1a0d-cc90-4190-9225-a16004deaad3
 ```
 
 You can also make the output look nicer in your terminal with the --fit-width option:
 
 ```
-openstack image show JS-API-Featured-Centos7-Jul-2-2018 --fit-width
+openstack image show JS-API-Featured-CentOS7-May-20-2019 --fit-width
 ```
+
+You can make that permanent by adding 
+```
+export CLIFF_FIT_WIDTH=1
+```
+to your environment.
 
 It's also important to note that the OpenStack CLI client offers help for the commands
 
@@ -201,25 +207,11 @@ Look at your keys (optional)
 openstack keypair list
 ```
 
-**If you want to be 100% sure, you can show the fingerprint of your key with
+**If you want to be 100% sure, you can show the fingerprint of your key with the following command. It's a good habit to be in.
 
 ```
 ssh-keygen -l -E md5 -f ${OS_USERNAME}-api-key
 ```
-
-## Looking at Horizon
-
-Open a new tab or window to
-
-### https://iu.jetstream-cloud.org/dashboard/
-
-with your tg???? id and password (in your openrc.sh file), to monitor your build progress on the Horizon interface.
-You will also be able to view other trainees instances and networks - **PLEASE do not delete 
-or modify anything that isn't yours!**
-
-And let's talk a bit here about Horizon, what it is, and why we're using the CLI and not this GUI...
-
-After the network creation, let's look at Horizon again to see the changes.
 
 ## Create and configure the network (this is usually only done once)
 
@@ -279,7 +271,15 @@ openstack router show ${OS_USERNAME}-api-router
 
 Well, looking at the changes in Horizon -
 
+Open a new tab or window to
+
 ### https://iu.jetstream-cloud.org/dashboard/
+
+with your tg???? id and password (in your openrc.sh file), to monitor your build progress on the Horizon interface.
+You will also be able to view other trainees instances and networks - **PLEASE do not delete 
+or modify anything that isn't yours!**
+
+And let's talk a bit here about Horizon, what it is, and why we're using the CLI and not this GUI...
 
 ## Start an instance
 
@@ -302,7 +302,7 @@ Time to boot your instance -- **please note that the image will change**! They a
 ```
 openstack server create ${OS_USERNAME}-api-U-1 \
 --flavor m1.tiny \
---image JS-API-Featured-CentOS7-Feb-22-2019 \
+--image JS-API-Featured-CentOS7-May-20-2019 \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
@@ -414,7 +414,7 @@ root@tg455656-headnode ~]# dmesg | grep sd
 Create a new filesystem on the device (from the VM):
 
 ```
-mkfs.xfs /dev/sdb
+mkfs.ext4 /dev/sdb
 ```
 
 Create a directory for the mount point and mount it (on the VM):
@@ -455,13 +455,6 @@ Stop the instance (shutdown -h now). Note that state is not retained and that re
 ```
 openstack server stop ${OS_USERNAME}-api-U-1
 openstack server start ${OS_USERNAME}-api-U-1
-```
-
-Pause the instance Note that your instance still remains in memory, state is retained, and resources continue to be reserved on the compute host assuming that you will be restarting the instance.
-
-```
-openstack server pause   ${OS_USERNAME}-api-U-1
-openstack server unpause ${OS_USERNAME}-api-U-1
 ```
 
 Put the instance to sleep; similar to closing the lid on your laptop. 
