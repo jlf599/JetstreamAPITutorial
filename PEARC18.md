@@ -167,7 +167,7 @@ openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
 ```
 *There's a reason to allow icmp. It's a contentious topic, but we recommend leaving it open. http://shouldiblockicmp.com/
 
-If you wanted to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for communications amongst all those instances (assumes your internal network will be 10.0.0.0/24). *We won't need this today*
+If you wanted to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for communications amongst all those instances (assumes your internal network will be 10.0.0.0/24). 
 
 ```
 openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
@@ -303,13 +303,13 @@ Note the possible images that you can use on the API side of Jetstream.
 openstack image list --limit 500 | grep JS-API-Featured
 ```
 
-*Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image. The actual cluster tutorial used this image - PEARC18-tutorial-headnode-stable.
+*Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a special headnode image with some software we'll need for the latter half of the tutorial.
 
 Time to boot your instance -- 
 ```
 openstack server create ${OS_USERNAME}-headnode \
 --flavor m1.small \
---image JS-API-Featured-CentOS7-May-20-2019  \
+--image PEARC18-tutorial-headnode-stable  \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
