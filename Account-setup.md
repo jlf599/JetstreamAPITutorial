@@ -12,6 +12,19 @@ package_reboot_if_required: false
 final_message: "Boot completed in $UPTIME seconds"
 
 ------------------
+You'll want to add 
+
+*export CLIFF_FIT_WIDTH=1*
+
+to /etc/bash.bashrc or in /etc/skel/.bashrc
+
+You might want to set the PS1 prompt in there to be friendlier, too...something like:
+
+*PS1="[Tutorial] \u \w-->"*
+
+in the same place.
+
+------------------
 
 Create the accounts:
 
