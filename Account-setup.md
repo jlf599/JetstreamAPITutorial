@@ -15,7 +15,7 @@ final_message: "Boot completed in $UPTIME seconds"
 You'll want to add a few things to /etc/bash.bashrc or in /etc/skel/.bashrc -- set the openstack client to fit the window, make the PS1 prompt be a bit friendlier (optional), and add /usr/local/bin to the path since Pip3 puts the openstack client there:
 
 
-```## Added for Openstack tutorial
+```\## Added for Openstack tutorial
 export CLIFF_FIT_WIDTH=1
 PS1="[Tutorial] \u \w-->"
 export PATH=/usr/local/bin:$PATH
