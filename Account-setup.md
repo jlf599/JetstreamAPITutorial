@@ -40,7 +40,7 @@ Then edit the sshd_config so it's something like this:
 
 ```[js-156-117] root ~-->tail /etc/ssh/sshd_config
 #AllowTcpForwarding no
-#PermitTTY no
+#PermitTTY no 
 #ForceCommand cvs server
 PermitRootLogin without-password
 
