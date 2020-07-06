@@ -18,7 +18,8 @@ You'll want to add a few things to /etc/bash.bashrc or in /etc/skel/.bashrc -- s
 ```## Added for Openstack tutorial
 export CLIFF_FIT_WIDTH=1
 PS1="[Tutorial] \u \w-->"
-export PATH=/usr/local/bin:$PATH```
+export PATH=/usr/local/bin:$PATH
+```
 
 ------------------
 
