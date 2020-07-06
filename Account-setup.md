@@ -16,7 +16,7 @@ You'll want to add a few things to /etc/bash.bashrc or in /etc/skel/.bashrc -- s
 
 
 ```
-&#35;&#35; Added for Openstack tutorial
+# Added for Openstack tutorial
 export CLIFF_FIT_WIDTH=1
 PS1="[Tutorial] \u \w-->"
 export PATH=/usr/local/bin:$PATH
