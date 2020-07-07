@@ -38,7 +38,7 @@ Jetstream is an XSEDE resource and you must have an XSEDE account before you can
 To access the client server, use your provided username and password, and log in to
 
 ```
-ssh your_training_user@tutorial.jetstream-cloud.org
+ssh your_training_user@sgci.jetstream-cloud.org
 ```
 
 You'll actually want to have **TWO** connections to this host. The reasons will be more obvious later.
@@ -93,14 +93,14 @@ E.g.
 
 ```
 openstack image list
-openstack image show JS-API-Featured-CentOS7-May-20-2019
-openstack image show 368d1a0d-cc90-4190-9225-a16004deaad3
+openstack image show JS-API-Featured-CentOS7-Latest
+openstack image show 03ce7036-e164-4ef7-8b96-367d943fb5d9
 ```
 
 You can also make the output look nicer in your terminal with the --fit-width option:
 
 ```
-openstack image show JS-API-Featured-CentOS7-May-20-2019 --fit-width
+openstack image show JS-API-Featured-CentOS7-Latest --fit-width
 ```
 
 You can make that permanent by adding 
@@ -302,7 +302,7 @@ Time to boot your instance -- **please note that the image will change**! They a
 ```
 openstack server create ${OS_USERNAME}-api-U-1 \
 --flavor m1.tiny \
---image JS-API-Featured-CentOS7-May-20-2019 \
+--image JS-API-Featured-CentOS7-Latest \
 --key-name ${OS_USERNAME}-api-key \
 --security-group ${OS_USERNAME}-global-ssh \
 --nic net-id=${OS_USERNAME}-api-net \
