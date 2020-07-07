@@ -545,5 +545,5 @@ There are also two projects going on for virtual clustering:
 * https://github.com/hpc-cloud-toolkit/ostack-hpc
 
 
-*Meta: Goo.gl link: https://goo.gl/8ke2fu
+*Meta: Goo.gl link: https://tinyurl.com/jetstreamAPI
 
