@@ -75,7 +75,7 @@ source openrc.sh
 
 Ensure that you have working openstack client access by running:
 ```
-openstack image list | grep JS-API-Featured
+openstack flavor list
 ```
 
 # A few notes about openstack commands
@@ -297,7 +297,7 @@ openstack image list --limit 500 | grep JS-API-Featured
 
 *Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image
 
-Time to boot your instance -- **please note that the image will change**! They are updated and named with the date.
+Time to boot your instance - 
 
 ```
 openstack server create ${OS_USERNAME}-api-U-1 \
@@ -331,23 +331,23 @@ openstack floating ip create public
 …then add that IP address to your running instance. Substitute the actual IP number you just got for the <your.ip.number.here>
 
 ```
-openstack server add floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
+openstack server add floating ip ${OS_USERNAME}-api-U-1 your.ip.number.here
 ```
 
 Is the instance reachable? Substitute the actual IP number you got for the <your.ip.number.here>
 
 ```
-ping <your.ip.number.here>
+ping -c 3 your.ip.number.here
 ```
 
-In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!). Substitute the actual IP number you got for the <your.ip.number.here>
+In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!). Substitute the actual IP number you got for the your.ip.number.here
 
 ```
-ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> 
+ssh -i ${OS_USERNAME}-api-key centos@your.ip.number.here
 
 *or if you were using an Ubuntu image*
 
-ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
+ssh -i ${OS_USERNAME}-api-key ubuntu@your.ip.number.here
 
 ```
 ## A brief look at volumes
