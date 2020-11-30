@@ -554,6 +554,10 @@ There are also two projects going on for virtual clustering:
 * https://github.com/ECoulter/Jetstream_Elastic_Slurm
 * https://github.com/hpc-cloud-toolkit/ostack-hpc
 
+Last but not least, there are quite a few tutorials for advanced topics such as Kubernetes here:
+* http://wiki.jetstream-cloud.org/Advanced+API+Topics
+
+Most were contributed by Andrea Zonca -- he deserves all credit for these and we very much appreciate him creating them and making them available!
 
 *Meta: Goo.gl link: https://tinyurl.com/jetstreamAPI
 
