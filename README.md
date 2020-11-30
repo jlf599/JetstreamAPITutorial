@@ -35,6 +35,8 @@ http://wiki.jetstream-cloud.org/Setting+up+openrc.sh
 ### Insuring that your credentials are in order
 Jetstream is an XSEDE resource and you must have an XSEDE account before you can use it either via the Atmosphere user interface or the OpenStack API. The following steps must work before proceeding; specifically, accessing the Horizon dashboard. If you cannot login to the Horizon dashboard, nothing else will work. When you first get API access on Jetstream, that's typically how we recommend people test their credentials.
 
+*Note: Your login for the API side is based on TACC credentials. That may or may not be the same username as your XSEDE username.*
+
 ## Access Openstack Client Server
 
 *Note that this prepared host only is created as needed for tutorials. If you want to work through this tutorial on your own, you'll need to install the CLI utilities and get your openrc -- docs for that are noted above on the Jetstream Cloud wiki*
