@@ -5,7 +5,7 @@ The OpenStack command line interface (CLI) is only one way to interact with Open
 
 We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from https://pypi.python.org/pypi/python-openstackclient
 
-Instructions for installing clients for multiple operating systems is here: https://docs.openstack.org/mitaka/user-guide/common/cli_install_openstack_command_line_clients.html
+Instructions for installing clients for multiple operating systems is here: https://pypi.org/project/python-openstackclient/
 
 Note that many people prefer installing in a virtualenv. An example of that would be:
 ```
@@ -13,6 +13,8 @@ Note that many people prefer installing in a virtualenv. An example of that woul
 [user@localhost]$ source ~/venv/bin/activate
 (venv)user@localhost$ pip install python-openstackclient
 ```
+Depending on what version of Python is the default for your system, you may need to do that as pip3 instead of pip.
+
 Also note that we will **NOT** be installing the clients for this tutorial.
 
 ## Some background getting started Jetstream Documentation
@@ -35,10 +37,16 @@ Jetstream is an XSEDE resource and you must have an XSEDE account before you can
 
 ## Access Openstack Client Server
 
+*Note that this prepared host only is created as needed for tutorials. If you want to work through this tutorial on your own, you'll need to install the CLI utilities and get your openrc -- docs for that are noted above on the Jetstream Cloud wiki*
+
 To access the client server, use your provided username and password, and log in to
 
 ```
-ssh your_training_user@sgci.jetstream-cloud.org
+ssh your_training_user@tutorial.jetstream-cloud.org
+```
+If you're in the habit of using ssh keys from the command line, you may need to bypass your keys like this
+```
+ssh -o PubkeyAuthentication=no  your_training_user@tutorial.jetstream-cloud.org
 ```
 
 You'll actually want to have **TWO** connections to this host. The reasons will be more obvious later.
