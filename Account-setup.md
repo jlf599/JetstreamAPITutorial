@@ -48,7 +48,7 @@ If not, you'll have to adjust accordingly.
 
 #### Atmopshere specific note 
 
-**Disregard if using API side
+<b>Disregard if using API side</b>
 
 If you're using an Atmo instance, you'll either need to add these accounts to the users group (which might inadvertantly give them sudo access) or create a new group to add them to -- which you'll then need to add to the sshd_config at the bottom.
 
