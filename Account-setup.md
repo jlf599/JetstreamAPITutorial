@@ -33,7 +33,7 @@ export PATH=/usr/local/bin:$PATH
 
 Everything in here assumes you have a file with four delimited columes. I generally have been using a four column file, basically just copied and pasted from Excel into a vi'd file on the tutorial host. This walkthrough assumes your input file has fields 
 
-*XSEDE_Username XSEDE_Password TACC_Username TACC_Password 
+*XSEDE_Username XSEDE_Password TACC_Username TACC_Password
 
 If not, you'll have to adjust accordingly.
 
