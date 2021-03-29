@@ -31,7 +31,7 @@ export PATH=/usr/local/bin:$PATH
 
 ### Before getting started
 
-Everything in here assumes you have a file with four delimited columes. I generally have been using a four column file, basically just copied and pasted from Excel into a vi'd file on the tutorial host. This walkthrough assumes your input file has fields 
+Everything in here assumes you have a file named account.list with four delimited columns. I generally have been using a four column file, basically just copied and pasted from Excel into a vi'd file on the tutorial host. This walkthrough assumes your input file has fields 
 
 *XSEDE_Username XSEDE_Password TACC_Username TACC_Password
 
@@ -42,7 +42,7 @@ If not, you'll have to adjust accordingly.
 
 ### Create the accounts:
 
-`cat list.txt| awk '{system("adduser " $1)}'`  
+`cat account.list| awk '{system("adduser " $1)}'`  
 
 ---
 
@@ -54,7 +54,7 @@ If you're using an Atmo instance, you'll either need to add these accounts to th
 
 `groupadd train`
 
-`awk '{system("usermod -G train " $1)}' passlist.txt`
+`awk '{system("usermod -G train " $1)}' account.list`
 
 Then edit the sshd_config so it's something like this:
 
@@ -77,7 +77,7 @@ If you're using training accounts, you won't have ssh keys, so you'll need to se
 
 To set passwords via cleartext:
 
-`awk '{ system("echo " $1":"$2" |chpasswd") }' userlist.txt`
+`awk '{ system("echo " $1":"$2" |chpasswd") }' account.list`
 
 Assuming a file with username (usually trainXX in col 1 and XSEDE password in col 2. I use the trainXX usernames and usually just use the password XSEDE Help gives me for the login password. It's reasonably secure for a short period of time. 
 
