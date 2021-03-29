@@ -17,7 +17,7 @@ package_reboot_if_required: false
 final_message: "Boot completed in $UPTIME seconds"
 ```
 
-*Note: You'll likely want to make sure the formatting is correct after putting creating the config file. Cut and paste from Github doesn't preserve the line breaks correctly in my experience.
+_Note: You'll likely want to make sure the formatting is correct after putting creating the config file. Cut and paste from Github doesn't preserve the line breaks correctly in my experience.
 
 You'll want to add a few things to /etc/bash.bashrc or in /etc/skel/.bashrc -- set the openstack client to fit the window, make the PS1 prompt be a bit friendlier (optional), and add /usr/local/bin to the path since Pip3 puts the openstack client there:
 
@@ -33,7 +33,7 @@ export PATH=/usr/local/bin:$PATH
 
 Everything in here assumes you have a file named account.list with four delimited columns. I generally have been using a four column file, basically just copied and pasted from Excel into a vi'd file on the tutorial host. This walkthrough assumes your input file has fields 
 
-*XSEDE_Username XSEDE_Password TACC_Username TACC_Password
+_XSEDE_Username XSEDE_Password TACC_Username TACC_Password
 
 If not, you'll have to adjust accordingly.
 
