@@ -1,18 +1,22 @@
 # OpenStack API Tutorial
 
 # Introduction to OpenStack CLI
-The OpenStack command line interface (CLI) is only one way to interact with OpenStack’s RESTful API. In this exercise we will use the command line clients installed on Jetstream instances to OpenStack entities; e.g. images, instances, volumes, objects, networks, etc.
+The OpenStack command line interface (CLI) is only one way to interact with OpenStack’s RESTful API. In this exercise we will use the command line clients installed on Jetstream2 instances to use, create, modify, and delete OpenStack entities; e.g. images, instances, volumes, objects, networks, etc.
 
 We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from https://pypi.python.org/pypi/python-openstackclient
 
-Instructions for installing clients for multiple operating systems is here: https://pypi.org/project/python-openstackclient/
+Instructions for installing clients for multiple operating systems is here: https://docs.jetstream-cloud.org/ui/cli/clients/
 
-Note that many people prefer installing in a virtualenv. An example of that would be:
-```
-[user@localhost]$ virtualenv ~/venv
-[user@localhost]$ source ~/venv/bin/activate
-(venv)user@localhost$ pip install python-openstackclient
-```
+Though not strictly necessary, we generally recommend using virtualenv to increase the stability of the openstack cli tools.
+
+| Task 	| Command 	|
+|---	|---	|
+| cd to your preferred directory <br><br>Create a directory for the project	| ```mkdir <project_name>``` 	|
+| Change to the project directory 	| ```cd <project_name>``` 	|
+| Install the venv packages 	| ```sudo python3 -m pip install --user virtualenv``` 	|
+| Start the VirtualEnvironment software  	| ```python3 -m venv env <project_name>``` 	|
+| Activate the VirtualEnvironment for the project 	| ```source <project_name>/bin/activate``` 	|
+
 Depending on what version of Python is the default for your system, you may need to do that as pip3 instead of pip.
 
 Also note that we will **NOT** be installing the clients for this tutorial.
