@@ -1,7 +1,7 @@
 # OpenStack API Tutorial
 
-Though not strictly necessary, we recommend using virtualenv to increase the stability of the openstack cli tools.
-{: .note}
+> :warning: Due to limitations in GitHub markdown, you may want to right click on any links you wish to open and open them in new tabs. 
+
 
 # Introduction to OpenStack CLI
 The OpenStack command line interface (CLI) is only one way to interact with OpenStack’s RESTful API. In this exercise we will use the command line clients installed on Jetstream2 instances to use, create, modify, and delete OpenStack entities; e.g. images, instances, volumes, objects, networks, etc.
