@@ -1,6 +1,7 @@
 # OpenStack API Tutorial
 
 > :warning: Due to limitations in GitHub markdown, we cannot set links to open in a new tab. 
+
 > :warning: You may wish to right click on any links you wish to open and open them in new tabs. 
 
 
