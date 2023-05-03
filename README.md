@@ -3,9 +3,9 @@
 # Introduction to OpenStack CLI
 The OpenStack command line interface (CLI) is only one way to interact with OpenStack’s RESTful API. In this exercise we will use the command line clients installed on Jetstream2 instances to use, create, modify, and delete OpenStack entities; e.g. images, instances, volumes, objects, networks, etc.
 
-We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from [https://pypi.python.org/pypi/python-openstackclient](https://pypi.python.org/pypi/python-openstackclient){:target="_blank" rel="noopener"} 
+We'll be using a host that's been prepped with a recent OpenStack python client and the appropriate credentials. Typically you would need to have the CLI clients installed. The latest client is available from https://pypi.python.org/pypi/python-openstackclient
 
-Instructions for installing clients for multiple operating systems is here: [https://docs.jetstream-cloud.org/ui/cli/clients/](https://docs.jetstream-cloud.org/ui/cli/clients/){:target="_blank" rel="noopener"} 
+Instructions for installing clients for multiple operating systems is here: https://docs.jetstream-cloud.org/ui/cli/clients/
 
 Though not strictly necessary, we generally recommend using virtualenv to increase the stability of the openstack cli tools.
 
@@ -24,16 +24,13 @@ Also note that we will **NOT** be installing the clients for this tutorial.
 ## Some background getting started Jetstream Documentation
 
 Getting started with the Jetstream2’s OpenStack API
-[https://docs.jetstream-cloud.org/ui/cli/overview/](https://docs.jetstream-cloud.org/ui/cli/overview/
-){:target="_blank" rel="noopener"} 
+https://docs.jetstream-cloud.org/ui/cli/overview/
 
 Setting up an application credential for Jetstream2’s OpenStack API
-[https://docs.jetstream-cloud.org/ui/cli/auth/](https://docs.jetstream-cloud.org/ui/cli/overview/
-){:target="_blank" rel="noopener"} 
+https://docs.jetstream-cloud.org/ui/cli/overview/
 
 SDKs for programmatically accessing OpenStack’s APIs
-[https://docs.openstack.org/openstacksdk/latest/user/](https://docs.jetstream-cloud.org/ui/cli/overview/
-){:target="_blank" rel="noopener"} 
+https://docs.jetstream-cloud.org/ui/cli/overview/
 
 ## Getting started with the hands on portion of the tutorial
 ### Insuring that your credentials are in order
