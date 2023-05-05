@@ -158,7 +158,9 @@ It is informative to follow what’s happening in the Horizon dashboard as you e
 
 # Create security group and adding rules to the group
 
-By DEFAULT, the security groups on Jetstream (OpenStack in general) are CLOSED - this is the opposite of how firewalls typically work (completely OPEN by default). If you create a host on a new allocation without adding it to a security group that allows access to some ports, you will not be able to use it!
+By DEFAULT, the security groups on Jetstream2 (OpenStack in general) are CLOSED - this is the opposite of how firewalls typically work (completely OPEN by default). If you create a host on a new allocation without adding it to a security group that allows access to some ports, you will not be able to use it!
+
+> :warning: There is a default security group on all OpenStack allocations on Jetstream2 that contains several rules, including egress rules. We ***HIGHLY*** recommend that you do not alter or delete that group. It can have 
 
 Create the group that we will be adding rules to
 
