@@ -160,67 +160,75 @@ It is informative to follow what’s happening in the Horizon dashboard as you e
 
 By DEFAULT, the security groups on Jetstream2 (OpenStack in general) are CLOSED - this is the opposite of how firewalls typically work (completely OPEN by default). If you create a host on a new allocation without adding it to a security group that allows access to some ports, you will not be able to use it!
 
-> :warning: There is a default security group on all OpenStack allocations on Jetstream2 that contains several rules, including egress rules. We ***HIGHLY*** recommend that you do not alter or delete that group. It can have 
+> :warning: There is a default security group on all OpenStack allocations on Jetstream2 that contains several rules, including egress rules. We ***HIGHLY*** recommend that you do not alter or delete that group. It can have unexpected consequences.
+
+*We also recommend using something unique like your username in rule names, instance names, and other resource names as the things you create are visible to everyone on the allocation (except for keypairs). We'll use **myusername** in the examples and you can change it as appropriate when creating your own objects.*
 
 Create the group that we will be adding rules to
 
 ```
-openstack security group create --description "ssh & icmp enabled" ${OS_USERNAME}-global-ssh
+openstack security group create --description "ssh & icmp enabled" myusername-global-ssh
 ```
 
 Create a rule for allowing ssh inbound from an IP address
 
 ```
-openstack security group rule create --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0 ${OS_USERNAME}-global-ssh
+openstack security group rule create --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0 myusername-global-ssh
 ```
 
 Create a rule that allows ping and other ICMP packets
 
 ```
-openstack security group rule create --proto icmp ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto icmp myusername-global-ssh
 ```
 *There's a reason to allow icmp. It's a contentious topic, but we recommend leaving it open. http://shouldiblockicmp.com/
 
 Optional rule to allow connectivity within a mini-cluster; i.e. if you boot more than one instance, this rule allows for comminications amongst all those instances. *We won't need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/24 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.0.0.0/24 myusername-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.0.0.0/24 myusername-global-ssh
 ```
 
 A better (more restrictive) example might be: *We will continue to not need this today*
 
 ```
-openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 ${OS_USERNAME}-global-ssh
-openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 ${OS_USERNAME}-global-ssh
+openstack security group rule create --proto tcp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 myusername-global-ssh
+openstack security group rule create --proto udp --dst-port 1:65535 --remote-ip 10.X.Y.0/24 myusername-global-ssh
 ```
 
 Look at your security group (optional)
 
 ```
-openstack security group show ${OS_USERNAME}-global-ssh
+openstack security group show myusername-global-ssh
 ```
 
 Adding/removing security groups after an instance is running (you don't have a server running yet so these will produce an error -- it's just information you might need later).
 
 ```
-openstack server add    security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
-openstack server remove security group ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-global-ssh
+openstack server add    security group my-instance myusername-global-ssh
+openstack server remove security group my-instance myusername-global-ssh
 ```
 
 *Note: that when you change the rules within a security group you are changing them in real-time on running instances. When we boot the instance below, we will specify which security groups we want to associate to the running instance.*
 
 ## Access to your instances will be via ssh keys
-If you do not already have an ssh key we will need to create on. For this tutorial we will create a passwordless key. In the real world, you would not want to do this
+If you do not already have an ssh key we will need to create on. For this tutorial we will create a passwordless key. In the real world, you would not want to do this. We recommend using ed22519 (Edwards-curve Digital Signature Algorithm (EdDSA)) keys but you may also use RSA.
 
+ed22519 example:
 ```
-ssh-keygen -b 2048 -t rsa -f ${OS_USERNAME}-api-key -P ""
+ssh-keygen -t ed22519 -f myusername-ed22519-api-key -P ""
+```
+
+RSA example:
+```
+ssh-keygen -b 2048 -t rsa -f myusername-rsa-api-key -P ""
 ```
 
 Upload your key to OpenStack
 
 ```
-openstack keypair create --public-key ${OS_USERNAME}-api-key.pub ${OS_USERNAME}-api-key
+openstack keypair create --public-key myusername-ed22519-api-key.pub myusername-ed22519-api-key
 ```
 
 Look at your keys (optional)
@@ -232,62 +240,14 @@ openstack keypair list
 **If you want to be 100% sure, you can show the fingerprint of your key with the following command. It's a good habit to be in.
 
 ```
-ssh-keygen -l -E md5 -f ${OS_USERNAME}-api-key
+ssh-keygen -l -E md5 -f myusername-ed22519-api-key
 ```
 
-## Create and configure the network (this is usually only done once)
+## Creating a network
 
-Create the network
+Generally, with Jetstream2, you won't want to create your own network and subnet and you will not be able to create a router due to quota restrictions (by default). We encourage using the *auto_allocated_network* that all Jetstream2 allocations receive automatically. We will put instructions for creating networks and subnets in a separate doc as optional steps but do not recommend it. 
 
-```
-openstack network create ${OS_USERNAME}-api-net
-```
-
-List the networks; do you see yours?
-
-```
-openstack network list
-```
-
-Create a subnet within your network. 
-
-If you want to list the subnets that have been created, just in case
-
-```
-openstack subnet list
-```
-
-Then create your subnet - notice that you can all use the same 10.0.0.0 network. You *can* use a different address space, but you don't have to.
-
-```
-openstack subnet create --network ${OS_USERNAME}-api-net --subnet-range 10.0.0.0/24 ${OS_USERNAME}-api-subnet1
-```
-
-Create a router
-
-```
-openstack router create ${OS_USERNAME}-api-router
-```
-
-Attach your subnet to the router
-
-```
-openstack router add subnet ${OS_USERNAME}-api-router ${OS_USERNAME}-api-subnet1
-```
-
-Attach your router to the public (externally routed) network
-
-```
-openstack router set --external-gateway public ${OS_USERNAME}-api-router
-```
-
-*Note: You cannot attach an instance directly to the public router. This was a conscious design decision. 
-
-Note the details of your router
-
-```
-openstack router show ${OS_USERNAME}-api-router
-```
+Full instructions are [here](Creating-Networks.md) -- but again, we do not encourage this.
 
 ### Stopping and smelling the roses
 
@@ -295,9 +255,9 @@ Well, looking at the changes in Horizon -
 
 Open a new tab or window to
 
-### https://iu.jetstream-cloud.org/dashboard/
+### https://js2.jetstream-cloud.org/
 
-with your tg???? id and password (in your openrc.sh file), to monitor your build progress on the Horizon interface.
+with your ACCESS id and password to monitor your build progress on the Horizon interface.
 You will also be able to view other trainees instances and networks - **PLEASE do not delete 
 or modify anything that isn't yours!**
 
@@ -314,25 +274,26 @@ openstack flavor list
 Note the possible images that you can use on the API side of Jetstream.
 
 ```
-openstack image list --limit 500 | grep JS-API-Featured
+openstack image list | grep Featured
 ```
 
-*Note: Images without the JS-API- string are destined to be boot via Atmosphere. Atmosphere runs various scripts during the boot process. If you are booting via the API then these scripts will not get executed and the booted instance may (probably) will not be usable. We're going to use a CentOS 7 API Featured image
+*Note: Jetstream2-built and maintained images will be called Featured-xxxxxxxx.*
 
 Time to boot your instance - 
 
 ```
-openstack server create ${OS_USERNAME}-api-U-1 \
---flavor m1.tiny \
---image JS-API-Featured-CentOS7-Latest \
---key-name ${OS_USERNAME}-api-key \
---security-group ${OS_USERNAME}-global-ssh \
---nic net-id=${OS_USERNAME}-api-net \
---user-data cloud.cfg \
+openstack server create myusername-u22-cli \
+--flavor m3.tiny \
+--image Featured-Ubuntu22 \
+--key-name myusername-ed22519-api-key \ 
+--security-group myusername-global-ssh \
+--nic net-id=auto_allocated_network \ 
 --wait
 ```
 
-*Note that ${OS_USERNAME}-api-U-1 is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
+> :warning: You only need to set the *--nic net-id=auto_allocated_network* line if there are multiple networks on your allocation. Though it won't hurt anything to set that at any CLI launch.
+
+*Note that myusername-u22-cli is the name of the running instance. A best practice for real usage is to pick a name that helps you identify that server. Each instance you boot should have a unique name; otherwise, you will have to control your instances via the UUID
 
 *Note on patching 
 
@@ -353,7 +314,7 @@ openstack floating ip create public
 …then add that IP address to your running instance. Substitute the actual IP number you just got for the <your.ip.number.here>
 
 ```
-openstack server add floating ip ${OS_USERNAME}-api-U-1 your.ip.number.here
+openstack server add floating ip myusername-u22-cli your.ip.number.here
 ```
 
 Is the instance reachable? Substitute the actual IP number you got for the <your.ip.number.here>
@@ -365,13 +326,19 @@ ping -c 3 your.ip.number.here
 In your second terminal window and/or with your favorite ssh client (if you use an external ssh client, you'll need to get that private key to put in it!). Substitute the actual IP number you got for the your.ip.number.here
 
 ```
-ssh -i ${OS_USERNAME}-api-key centos@your.ip.number.here
+ssh -i myusername-ed22519-api-key ubuntu@your.ip.number.here
 
-*or if you were using an Ubuntu image*
+*or if you were using a Rocky image*
 
-ssh -i ${OS_USERNAME}-api-key ubuntu@your.ip.number.here
+ssh -i myusername-ed22519-api-key rocky@your.ip.number.here
+
+*or if you were using an Alma image*
+
+ssh -i myusername-ed22519-api-key almalinux@your.ip.number.here
 
 ```
+
+
 ## A brief look at volumes
 
 Creating a volume:
@@ -379,23 +346,21 @@ Creating a volume:
 Back in your openstack window, do the following:
 
 ```
-openstack volume create --size 10 ${OS_USERNAME}-10GVolume
+openstack volume create --size 10 myusername-10GVolume
 ```
 
 Now, add the new storage device to your VM:
 
 ```
-openstack server add volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
+openstack server add volume myusername-u22-cli myusername-10GVolume
 ```
 
 Let's ssh in and get the volume working (if you're not still logged in via the other window). Substitute the actual IP number you just got for the <your.ip.number.here>.
 
 ```
-ssh -i ${OS_USERNAME}-api-key centos@<your.ip.number.here> 
+ssh -i myusername-ed22519-api-key ubuntu@<your.ip.number.here> 
 
-*or if you were using an Ubuntu image*
-
-ssh -i ${OS_USERNAME}-api-key ubuntu@<your.ip.number.here>
+*or the appropriate username (rocky, almalinux) -- see above*
 ```
 
 Become root on your VM: (otherwise, you'll have to preface much of the following with sudo)
@@ -403,7 +368,7 @@ Become root on your VM: (otherwise, you'll have to preface much of the following
 sudo su -
 ```
 
-Find the new volume on the headnode with (most likely it will mount as sdb). The command is:
+Find the new volume on the instance with (most likely it will mount as sdb). The command is:
 
 ```
 dmesg | grep sd
@@ -455,8 +420,8 @@ umount /testmount
 
 Do this from the shell host:
 ```
-openstack server remove volume ${OS_USERNAME}-api-U-1 ${OS_USERNAME}-10GVolume
-openstack volume delete ${OS_USERNAME}-10GVolume
+openstack server remove volume myusername-u22-cli myusername-10GVolume
+openstack volume delete myusername-10GVolume
 ```
 
 ## DO NOT DO THESE -- THIS IS FOR INFORMATION PURPOSES ONLY ##
@@ -465,34 +430,34 @@ openstack volume delete ${OS_USERNAME}-10GVolume
 Reboot the instance (shutdown -r now).
 
 ```
-openstack server reboot ${OS_USERNAME}-api-U-1
+openstack server reboot myusername-u22-cli
 
 or
 
-openstack server reboot ${OS_USERNAME}-api-U-1 --hard
+openstack server reboot myusername-u22-cli --hard
 ```
 
 Stop the instance (shutdown -h now). Note that state is not retained and that resources are still reserved on the compute host so that when you decide restart the instance, resources are available to activate the instance.
 
 ```
-openstack server stop ${OS_USERNAME}-api-U-1
-openstack server start ${OS_USERNAME}-api-U-1
+openstack server stop myusername-u22-cli
+openstack server start myusername-u22-cli
 ```
 
 Put the instance to sleep; similar to closing the lid on your laptop. 
 Note that resources are still reserved on the compute host for when you decide restart the instance
 
 ```
-openstack server suspend ${OS_USERNAME}-api-U-1
-openstack server resume  ${OS_USERNAME}-api-U-1
+openstack server suspend myusername-u22-cli
+openstack server resume  myusername-u22-cli
 ```
 
 Shut the instance down and move to storage. Memory state is not maintained. Ephemeral storage is maintained. 
 Note that resources are still reserved on the compute host for when you decide restart the instance
 
 ```
-openstack server shelve ${OS_USERNAME}-api-U-1
-openstack server unshelve ${OS_USERNAME}-api-U-1
+openstack server shelve myusername-u22-cli
+openstack server unshelve myusername-u22-cli
 ```
 
 ## Dismantling what we have built
@@ -501,7 +466,7 @@ Note that infrastructure such as networks, routers, subnets, etc. only need to b
 Remove the IP from the instance. Substitute the actual IP number you got for the <your.ip.number.here>.
 
 ```
-openstack server remove floating ip ${OS_USERNAME}-api-U-1 <your.ip.number.here>
+openstack server remove floating ip myusername-u22-cli <your.ip.number.here>
 ```
 
 Return the IP to the pool. Substitute the actual IP number you got for the <your.ip.number.here>
@@ -513,63 +478,29 @@ openstack floating ip delete <your.ip.number.here>
 Delete the instance
 
 ```
-openstack server delete ${OS_USERNAME}-api-U-1
-```
-
-Unplug your router from the public network
-
-```
-openstack router unset --external-gateway ${OS_USERNAME}-api-router
-```
-
-Remove the subnet from the network
-
-```
-openstack router remove subnet ${OS_USERNAME}-api-router ${OS_USERNAME}-api-subnet1
-```
-
-Delete the router
-
-```
-openstack router delete ${OS_USERNAME}-api-router
-```
-
-Delete the subnet
-
-```
-openstack subnet delete ${OS_USERNAME}-api-subnet1
-```
-
-Delete the network
-
-```
-openstack network delete ${OS_USERNAME}-api-net
+openstack server delete myusername-u22-cli
 ```
 
 Delete the security group
 
 ```
-openstack security group delete ${OS_USERNAME}-global-ssh
+openstack security group delete myusername-global-ssh
 ```
 
 Delete the key pair
 ```
-openstack keypair delete ${OS_USERNAME}-api-key
+openstack keypair delete myusername-ed22519-api-key
 ```
 
 For further investigation…
-A tutorial was presented at the PEARC17 conference on how to build a SLURM HPC cluster with OpenStack - https://github.com/ECoulter/Tutorial_Practice
+Docs on how to build a SLURM HPC cluster with OpenStack: 
+* https://docs.jetstream-cloud.org/general/virtualclusters/
+* https://xcri-docs.readthedocs.io/en/latest/toolkits/vc-installation/
 
-The tutorial assumes that a node at IP 149.165.157.95 is running that you need to login to as a first step. (Similar to this exercise.) This node was provided as an easy way to run the class and its only purpose was to provide a host with the openstack CLI clients installed. You can safely skip this step and proceed with executing the openstack commands you see in the tutorial.
+Topics on Kubernetes on Jetstream2:
+* https://docs.jetstream-cloud.org/general/kubernetes/
 
-There are also two projects going on for virtual clustering:
-* https://github.com/ECoulter/Jetstream_Elastic_Slurm
-* https://github.com/hpc-cloud-toolkit/ostack-hpc
-
-Last but not least, there are quite a few tutorials for advanced topics such as Kubernetes here:
-* http://wiki.jetstream-cloud.org/Advanced+API+Topics
-
-Most were contributed by Andrea Zonca -- he deserves all credit for these and we very much appreciate him creating them and making them available!
+Several were developed and contributed by Andrea Zonca fron SDSC -- he deserves the credit for these and we very much appreciate him creating them and making them available!
 
 *Meta: Goo.gl link: https://tinyurl.com/jetstreamAPI
 
