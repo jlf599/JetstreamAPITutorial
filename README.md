@@ -47,6 +47,8 @@ Jetstream2 is an ACCESS resource and you must have an ACCESS account before you 
 
 *Note that this prepared host only is created as needed for tutorials. If you want to work through this tutorial on your own, you'll need to install the CLI utilities and get your application credential openrc -- docs for that are noted above on the Jetstream2 Cloud docs site*
 
+> :warning: Please note that this may change from tutorial to tutorial -- so see the instructor for up to date information
+
 To access the client server, use your provided username and password, and log in to
 
 ```
@@ -65,28 +67,26 @@ You may experience a delay after typing in your password - this is normal! Don't
 
 You'll have to generate your application credential using the instructions here:
 
-[https://docs.jetstream-cloud.org/ui/cli/auth/](https://docs.jetstream-cloud.org/ui/cli/auth/){:target="_blank"}
+https://docs.jetstream-cloud.org/ui/cli/auth/
 
-First, double-check the openrc.sh with your training account info - the file already exists in your home directory. Normally you'd have to create your own -- refer to http://wiki.jetstream-cloud.org/Setting+up+openrc.sh 
+You'll want to save that to a file on the training host or your computer (wherever you're doing the tutorial from). We suggest using a descriptive name like .openrc-XXXXXXXX (substituting your username or allocation number as part of the name)
+
+It will look something like this:
 
 ```
-[Tutorial] train60 ~--> cat ./openrc.sh
-export OS_PROJECT_DOMAIN_NAME=tacc 
-export OS_USER_DOMAIN_NAME=tacc 
-export OS_PROJECT_NAME=TG-CDA170005 
-export OS_USERNAME=SET_ME
-export OS_PASSWORD='REDACTED' 
-export OS_AUTH_URL=ADD_END_POINT
+[Tutorial] train60 ~--> cat ./.openrc-js2-TRA160003
+#!/usr/bin/env bash
+
+export OS_AUTH_TYPE=v3applicationcredential
+export OS_AUTH_URL=https://js2.jetstream-cloud.org:5000/v3/
 export OS_IDENTITY_API_VERSION=3
+export OS_REGION_NAME="IU"
+export OS_INTERFACE=public
+export OS_APPLICATION_CREDENTIAL_ID=f9e803e17ba04ced80474e667bf59bf9
+export OS_APPLICATION_CREDENTIAL_SECRET='1Th1s21s@C0mpl3xP@ssw0rd7713v1'
 ```
 
-In the real world you will want not want to save your password in a file. A much more secure way to set OS_PASSWORD is to read it from the command line when the openrc is sourced. E.g.
-
-```
-echo "Please enter your OpenStack Password: "
-read -sr OS_PASSWORD_INPUT
-export OS_PASSWORD=$OS_PASSWORD_INPUT
-```
+While it looks like you're still embedding a password in a file (which is definitely NOT a preferred security practice), it's only creating a scoped credential to allow access to your allocation without disclosing your ACCESS password. Application credentials can also have a lifespan -- you can set an expiration date to have a very short term credential if you so desire. 
 
 Next, add these environment variables to your shell session:
 ```
@@ -113,14 +113,14 @@ E.g.
 
 ```
 openstack image list
-openstack image show JS-API-Featured-CentOS7-Latest
-openstack image show 03ce7036-e164-4ef7-8b96-367d943fb5d9
+openstack image show Featured-Ubuntu22
+openstack image show 6a7c5c72-23f3-412c-8d15-bdd5756f660f
 ```
 
 You can also make the output look nicer in your terminal with the --fit-width option:
 
 ```
-openstack image show JS-API-Featured-CentOS7-Latest --fit-width
+openstack image show Featured-Ubuntu22 --fit-width
 ```
 
 You can make that permanent by adding 
